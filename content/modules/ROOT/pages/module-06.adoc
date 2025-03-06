@@ -1,0 +1,125 @@
+= Get more flexibility with the constructed inventory feature
+
+You might remember the concept of Smart Inventories. They allowed us to create inventories over multiple inventory sources and optionally combine them with some built-in filters. However, smart inventories also had some severe limitations, most notably, smart inventories lose host group membership information.
+
+Therefore, the concept of smart inventories, although still available in automation controller, is deprecated and replaced by constructed inventories. They are far more flexible and of course, they maintain the group membership information of your hosts.
+
+== Introduction
+
+Let's create our first constructed inventory by navigating to *Inventories* in the *Resources* section in the main menu on the left.
+
+* Create a new inventory by clicking on the blue Add button and then *Add constructed inventory*.
+* Use "Constructed Inventory" as its name
+* Click on the magnifying glass next to *Input Inventories* and select the existing `Cloud inventory` and `Lab inventory`. Click *Select*
+* In the input field *Source vars* add the following details:
+
+[source,yaml,role=execute]
+----
+---
+plugin: ansible.builtin.constructed
+strict: false
+----
+
+The first line informs the automation controller that we want to use the constructed inventory plugin. The *strict* setting set to "false" allows us to use variables later, which don't have to be defined. With *strict* set to "true" automation controller will fail to parse the constructed inventory, if a variable is not defined for any particular host.
+
+* Click **Save**
+
+Now while in the details view of the `Constructed Inventory`:
+
+*  Hit the sync button.
+* After the sync has finished, have a look at the **Hosts** tab
+* You should see all hosts from the `Cloud inventory` and the `Lab inventory` combined.
+* You should also see a group called *dyngroup* which was imported from our dynamic inventory `Cloud inventory`.
+
+== Compose
+
+In historically grown environments you often have the problem that your inventory source has some legacy information, which you want to beautify or have to fix so Ansible can actually reach the remote host. In our first example, let's assume you have an inventory source which returns some hostnames with upper case characters. To make everything work smoothly, we want all fully qualified domain names to be converted to lower case characters.
+
+Let's expand our configuration to the following, edit again the **Source vars** of the `Constructed Inventory` to look as follows:
+
+[source,yaml,role=execute]
+----
+---
+plugin: ansible.builtin.constructed
+strict: false
+compose:
+  ansible_host: inventory_hostname | lower()
+----
+
+When connecting to a remote host Ansible is using the *ansible_host* variable - this is different from the *inventory_hostname* which is what we for example see in the UI when we click on *Hosts*. Click *Save* and then *Sync* to apply the constructed inventory.
+
+After the sync completed, check the tabs *Hosts* and *Groups*. You should see a host `CLOUD3.cloud.example.com` and if you click on it, you will see it has a variable *ansible_host* with the FQDN converted to lower case characters.
+
+== Groups
+
+Many organizations use a strict convention for hostnames. Often a hostname indicates the purpose and the stage of a given system. In our case we have a couple of hosts which are in the *prod* and in the *dev* sub domain. We can use this information to automatically add the hosts to the respective group. Let's extend our constructed inventory configuration.
+
+Navigate back to your constructed inventory by clicking on *Inventories* in the *Resources* section of the main menu and then edit the `Constructed Inventory` by clicking on the pen icon on the right hand side.
+
+Change the input field *Source vars* to the following:
+
+[source,yaml,role=execute]
+----
+---
+plugin: ansible.builtin.constructed
+strict: false
+compose:
+  ansible_host: inventory_hostname | lower()
+groups:
+  production: inventory_hostname is search('prod')
+  development: inventory_hostname is search('dev')
+----
+
+Click on *Save* and *Sync* again. When you navigate to the *Hosts* tab of the `Constructed Inventory`, you should not notice any difference. However, in the *Groups* tab you should see two new groups and you should find the respective hosts in the production and development group.
+
+== Keyed Groups
+
+In this last example we want to use host variables to automatically add systems to specific groups. Instead of hard coding the group names, we want to use the value of the variables as group names.
+
+Let's assume your systems have a variable `architecture` with the CPU architecture (like ARM and x86_64) and a variable `type` showing the role of the system (web or database). Instead of manually assigning these groups, we can use the value of these variables. An added benefit of this approach is, if you ever introduce new CPU architectures or roles, the groups will automatically update accordingly.
+
+As an example here are the variables assigned to host `cloud1.cloud.example.com`:
+
+[source,yaml]
+----
+{
+  "ansible_host": "cloud1.cloud.example.com",
+  "architecture": "x86_64",
+  "type": "web"
+}
+----
+
+As before, change the settings for your constructed inventory. You should know by now, how to get to the menu and apply the change:
+
+[source,yaml,role=execute]
+----
+---
+plugin: ansible.builtin.constructed
+strict: false
+compose:
+  ansible_host: inventory_hostname | lower()
+  name: inventory_hostname | lower()
+groups:
+  production: inventory_hostname is search('prod')
+  development: inventory_hostname is search('dev')
+keyed_groups:
+  - prefix: ""
+    separator: ""
+    key: architecture
+  - prefix: "server_type"
+    separator: "-"
+    key: type
+----
+
+After you have saved and synced the changes have a look at the new groups that were created:
+
+* You should see new groups per CPU architecture with the respective hosts showing up. The group name is taken from the `architecture` variable of the hosts.
+* The second keyed groups entry is creating groups according to the `type` variable of the host. This time the group name is prefixed with the string `server_type` and a separator.
+
+If a host has multiple matching keys (like `database` and `web`), the separator is used to separate them in the group name. In our example, each host is in only one group so the separator is only seen in front of the `type`.
+
+TIP: Have you noticed what happened to the separator? The dash ("**-**") automatically became an underscore ("**_**").
+Dashes used to be allowed in group names but not anymore.
+Name your groups (and roles and playbooks, as part of collections) like Python variables, with only letters, digits and underscores.
+
+If you want to learn more about constructed inventories, there is a great https://www.redhat.com/en/blog/how-to-use-the-new-constructed-inventory-feature-in-aap-2.4[Blog Post,window=_blank] and of course the https://docs.ansible.com/automation-controller/latest/html/userguide/inventories.html#ug-inventories-constructed[automation controller documentation,window=_blank].

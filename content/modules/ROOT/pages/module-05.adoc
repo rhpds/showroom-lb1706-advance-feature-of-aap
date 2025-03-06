@@ -1,0 +1,176 @@
+# Use dynamic inventories to scale your automation.
+
+In Ansible and automation controller, as you know, everything starts with an inventory. There are several methods how inventories can be created. Starting from simple static definitions over importing inventory files to dynamic and smart inventories.
+
+In real life it’s very common to deal with external dynamic inventory sources (think cloud, CMDB, containers, ...). In this chapter we’ll introduce you to building dynamic inventories using custom inventory scripts. Another great feature of the automation controller to deal with inventories is the Constructed Inventory feature, which you’ll do a lab on as well.
+
+== Dynamic Inventories
+
+Automation controller includes built-in support for syncing dynamic inventories from cloud sources such as Amazon AWS, Google Compute Engine, and others.
+
+* Inventory plugins are the newer way to generate custom inventories and must be written in Python, but inventory scripts still work.
+* If the source you want to query is not covered by an existing inventory plugin, you can create your own script or plugin.
+
+In this chapter you’ll get started with custom dynamic inventory _scripts_.
+Among all the available programming languages we have chosen one of the most accessible and known: Bash! Yes!
+
+IMPORTANT: Don’t get this wrong... we’ve chosen to use Bash to make it as simple as possible to show the concepts behind dynamic and custom inventories.
+Our recommendation in real life remains to use Python to write your dynamic inventory _plugins_ (not scripts!), and profit from libraries, documentation and examples written in the same language.
+And actually you should even place the inventory plugin in a collection and use it as part of this collection added to an Execution Environment loaded into the controller.
+But this approach would have been too involved for this lab, so here you are: Bash!
+
+=== The Inventory Source
+
+First you need an inventory source. In *real life* this would be your cloud provider, your CMDB, or what not. For the sake of this lab we put a simple file into a GitLab repository.
+
+Use curl to query your "external inventory source":
+
+[source,shell,role=execute,subs="attributes"]
+----
+curl {gitea_web_ui_url}/lab-user/playbooks-adv-controller/raw/branch/main/constructed-inventory/inventory_list
+----
+
+This should give you the following output:
+
+[source,json]
+----
+{
+    "dyngroup":{
+        "hosts":[
+            "cloud1.cloud.example.com",
+            "cloud2.cloud.example.com",
+            "CLOUD3.cloud.example.com"
+        ],
+        "vars":{
+            "var1": true
+        }
+    },
+    "all":{
+        "hosts":[
+            "cloud4.prod.cloud.example.com",
+            "cloud5.prod.cloud.example.com",
+            "cloud6.dev.cloud.example.com",
+            "cloud7.dev.cloud.example.com"
+        ]
+    },
+    "_meta":{
+        "hostvars":{
+            "cloud1.cloud.example.com":{
+                "type":"web",
+                "architecture":"x86_64"
+            },
+            "cloud2.cloud.example.com":{
+                "type":"database",
+                "architecture":"arm"
+            },
+            "cloud3.cloud.example.com":{
+                "type":"database",
+                "architecture":"x86_64"
+            },
+            "cloud4.prod.cloud.example.com":{
+                "type":"web",
+                "architecture":"arm"
+            },
+            "cloud5.prod.cloud.example.com":{
+                "type":"web",
+                "architecture":"x86_64"
+            },
+            "cloud6.dev.cloud.example.com":{
+                "type":"web",
+                "architecture":"arm"
+            },
+            "cloud7.dev.cloud.example.com":{
+                "type":"web",
+                "architecture":"x86_64"
+            }
+        }
+    }
+}
+----
+
+Well, this is handy, the output is already presented as JSON, as expected by Ansible... ;-)
+
+NOTE: Okay, seriously, in real life your plugin would likely get some information from your source system, format it as JSON and return the data to the automation controller.
+
+==== The Custom Inventory Script
+
+An inventory script (and plugins, too) has to follow some conventions. It must accept the *`--list`* and *`--host <hostname>`* arguments. When it is called with *`--list`*, the script must output JSON-encoded data containing all groups and hosts to be managed. When called with *`--host <hostname>`* it must return an JSON-formatted hash or dictionary of host variables (can be empty) for this particular host.
+
+As looping over all hosts and calling the script with *`--host`* can be pretty slow, it is possible to return a top level element called *`_meta`* with all host variables together with the output of *`--list`* in one run. And this is what we’ll do. So this is our custom inventory script:
+
+[source,bash,role=execute,subs="attributes"]
+----
+#!/bin/bash
+
+if [ "$1" == "--list" ] ; then
+    curl -sS {gitea_web_ui_url}/lab-user/playbooks-adv-controller/raw/branch/main/constructed-inventory/inventory_list
+elif [ "$1" == "--host" ]; then
+    echo '{"_meta": {"hostvars": {}}}'
+else
+    echo "{ }"
+fi
+----
+
+What it basically does is to return the data collected by curl when called with *`--list`* and as the data includes *`_meta`* information about the host variables Ansible will not call it again with *`--host`*. The curl command is of course the place where your plugin would get data by whatever means, format it as proper JSON and return it (`-sS` makes curl silent, except for error messages).
+
+But before we integrate the custom inventory plugin into our automation controller, it’s a good idea to test it on the command line:
+
+* Bring up your VS Code browser tab, refer to the xref:lab-access.adoc[Lab Access] page if the tab was closed.
+* In either the visual editor or in the terminal using your favorite command line editor, create the file `/home/{bastion_ssh_user_name}/dyninv.sh` with the content of the Bash script shown above.
+
+TIP: Make sure to really create the script in `/home/{bastion_ssh_user_name}/`
+
+* Make the script executable:
++
+[source,shell,role=execute]
+----
+chmod +x dyninv.sh
+----
+
+* Execute it:
++
+[source,shell,role=execute]
+----
+./dyninv.sh --list
+----
+
+This should give you the same output as above.
+
+As simple as it gets, right? More information can be found on https://docs.ansible.com/ansible/latest/dev_guide/developing_inventory.html[how to develop dynamic inventories,window=_blank].
+
+So, now you have a source of a (slightly static) dynamic inventory (talk about an oxymoron…) and a script to fetch and pass it to the automation controller.
+
+=== Integrate into automation controller
+
+In Ansible Tower up to version 3.8, you could create inventory scripts directly in the web UI. Since automation controller 4.0 the only way to get inventory scripts into automation controller is by putting the script into a source control repository.
+
+For this lab the inventory script was already created in the Git repository you have configured as a *Project* earlier, so you can use this as-is.
+
+You can directly proceed to adding the dynamic inventory and pointing it to the inventory script.
+
+* In the web UI, open *Inventories* in the *Resources* section.
+* To create a new custom inventory, click the blue Add button and click on *Add inventory*.
+* Fill in the needed data:
+  ** *Name:* Cloud inventory
+* Click *Save*
+* Change to the *Sources* tab and once more click the blue add button.
+* Fill in the needed data:
+  ** *Name:* Cloud inventory Script
+  ** *Source:* Sourced from a Project
+  ** *Project:* Lab Project Repo
+  ** *Inventory file:* constructed-inventory/inventory-script
+  ** enable *Update on launch*
+* Click on *Save*
+* Start the initial sync by clicking on *Sync*
+
+Navigate to *Jobs* in the *Views* section to watch the initial sync, the *Type* is `Inventory Sync`.
+
+After the inventory sync has finished check out the new hosts which were added by it to your _Cloud inventory_, by navigating to *Hosts* in the *Resources* section. You should find a number of new hosts according to the JSON output above.
+
+=== What is the take-away?
+
+Using this simple example you have:
+
+* Created a script to query an inventory source
+* Integrated the script into controller
+* Populated an inventory using the custom script

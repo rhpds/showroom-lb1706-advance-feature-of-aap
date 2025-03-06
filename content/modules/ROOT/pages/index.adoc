@@ -1,43 +1,133 @@
-= {lab_name}
+= Lab Introduction
 
-The `lab_name` var, known as an asciidoc attribute, above was set in `./content/antora.yml` and can be used to set the lab_name or title of your content.
-You are both free to change its value and if you prefer to use a different var name, you can change the value of `lab_name`, for example to `title` in `./content/antora.yml` and then reference it in your content as `\{title}`. +
+== About this Lab
 
-image::rhel-logo-black.jpg[rhel-logo-black,55%,55%]
+You have already used Ansible Automation quite a bit and have started to look into Ansible Automation Platform automation controller? Or you are already using automation controller (fka Tower)? Cool.
+We prepared this lab to give you a hands-on introduction to some of the more advanced features of the automation controller. You’ll learn to:
 
-== Variables
+- Automate the automation: Configure automation controller with Ansible.
+- Use controller workflows to allow teams to work more efficiently together.
+- Use surveys to provide self-service to your automation users.
+- Use dynamic inventories and the new constructed inventory feature for scale and flexibility.
+- Secure the automation supply chain: Use content signing to make sure only approved content is run in automation controller.
 
-Other vars can also be set there, such as `ssh_user` and `ssh_password`, and referenced inline in the lab content by using the `\{foo}` syntax.
 
-This is another var, or asciidoc attribute, from `./content/antora.yml` {my_var}
+== Lab Infrastructure
 
-== Writing your lab
+Your lab includes a number of servers:
 
-Whatever type of content you are writing we'll refer to your *content* as "your lab" in this document.
+- A bastion host running VS Code server.
+- An automation platform cluster with a separate DB host.
+- Two managed RHEL 9 hosts.
 
-=== Lab structure
+TIP: All access information has been summarized for your convenience on page link:lab-access.html[Lab Access], accessible in the TOC to the right.
 
-Wether you are writing a lab
+== Working the Lab
 
-* First, we will build a monolithic application already compiled as RPM packages and put it into a container. This will allow us to deploy the application, copy it between machines, and update it separately from the operating system. This process affords us a portable and easily maintained component instead of tightly coupling the application with your operating system maintenance.
+Some hints to get you started:
 
-* In closing we will build a second container on a different operating system version that makes an application not packaged into RPMs. This will be similar to a web application deployment, positioning the correct files at the right locations. To do this, we will pull a project from GitHub and position the component files within our container image. The purpose of this is to achieve a portable application container that can deploy on several different versions of Red Hat Enterprise Linux. This also provides the benefit of decoupling your application maintenance, which would all happen by building new containers versus operating system maintenance. The container is no longer reliant on the operating system installed on the machine where the application is deployed.
+- Don’t type everything manually, use copy & paste from the browser when appropriate, but take your time to understand what you are actually doing.
+- To **edit files** or **open a terminal window**, we provide **VS Code Server**, basically the great VS Code Editor running in your browser.
 
-. Now let's examine this cluster a bit more by describing the cluster (the `$GUID` environment variable is already set for you so you can immediately describe your individual cluster):
-+
-[source,sh,role=execute]
+TIP: Commands you are supposed to run can be shown with or without the expected output
+
+TIP: The command line can wrap on the HTML page from time to time. Therefore the output might be separated from the command line for better readability by an empty line.
+
+== Accessing your Lab Environment
+
+=== Using VS Code
+
+Your main point of contact with the lab is **VS Code Server**, providing a VS Code-experience in your browser. You'll use VS Code to open terminals and to edit files (either in the build-in GUI editor or just using your favorite editor on the command line). 
+
+Now, open **VS Code** by clicking on the URL {vscode_web_ui_url}[window=_blank].
+
+You should be greeted with a login screen:
+
+image::vscode-pwd.png[500,300]
+
+Use the password **{vscode_web_ui_password}** to log in to the **VS Code** server web UI. Now open a new terminal by heading to the menu item **Terminal** at the top of the page and select **New Terminal**. A new section will appear in the lower half of the screen and you will be greeted with a prompt:
+
+image::vscode-terminal.png[]
+
+Congrats, you now have a shell terminal on your bastion node you can use to work on the command line. From here you run commands or access the other hosts in your lab environment, if the lab task requires it.
+
+=== OPTIONAL: Direct Lab Access using SSH
+
+You can of course use SSH directly to access the bastion node when you have an SSH client ready to go and know your way around:
+
+[subs="attributes",source,shell,role=execute]
 ----
-podman ps
-----
-+
-.Sample Output
-[source,texinfo,subs="attributes"]
-----
-CONTAINER ID  IMAGE                        COMMAND           CREATED      STATUS      PORTS                 NAMES
-2dcfee9e50c4  docker.io/library/httpd:2.4  httpd-foreground  3 hours ago  Up 3 hours  0.0.0.0:8080->80/tcp  showroom-httpd
+ssh lab-user@{bastion_host_name}
 ----
 
-=== Lab Access
+The password is still the same: {ansible_controller_admin_password}
 
-The terminal window to your right is *already* logged into the lab environment as the `{ssh_user}` user via `ssh`. 
-All steps of this lab are to be completed as the `{ssh_user}` user.
+TIP: The user to access the terminal is `lab-user`, but your bastion node is setup to let you become `root` using _sudo_ without a password.
+
+TIP: All access information has been summarized for your convenience under xref:lab-access.adoc[Lab Access], accessible in the navigation menu to the right.
+
+== Lab Configuration
+
+Most prerequisite tasks have already been done for you:
+
+- Ansible software is installed
+- `sudo` has been configured on the managed hosts to run commands that require root privileges.
+- An `.ansible-navigator.yml` configuration file has been created.
+Without it, you would have to add parameters to each execution of `ansible-navigator`.
+
+== Brief Introduction to `ansible-navigator`
+
+During this lab, you will always use `ansible-navigator` which supersedes the capabilities of `ansible-playbook`. Let's check Ansible Navigator has been installed correctly (your browser might ask for permission for pasting):
+
+[source,shell,role=execute]
+----
+ansible-navigator --version
+----
+
+where the result should be something like (your actual version might differ):
+[source,shell]
+----
+ansible-navigator 3.4.1
+----
+
+Have now a look at your Ansible Navigator configuration file. It's a dot file in your user's home directory and can be printed to screen with the following command:
+
+[source,shell,role=execute]
+----
+cat ~/.ansible-navigator.yml
+----
+
+You can also open the file in VS Code by using the navigation bar on the left or the "Open File" command from the "File" menu.
+
+Note the following parameters within the `execution-environment` section:
+
+- `image`: where the default execution environment is set, we have switched it to your **private automation hub**
+- `pull.policy`: set to **missing**, only download the execution environment if it doesn't already exist locally.
+- `environment-variables`: since execution environments are basically Linux containers, which don't have access to your environment variables, we have to compile a list of variables we want to have passed through to the container, or even specifically defined.
+
+For a full listing of every configurable knob checkout the link:https://ansible.readthedocs.io/projects/navigator/settings/[settings documentation,window=_blank].
+
+NOTE: For your convenience we added the authentication credentials for automation controller to the configuration, so you don't have to manually log in. In most real world scenarios you probably don't want to do this and will not store your password in a clear text configuration file
+
+Run the `ansible-navigator` command with the `images` argument to look at execution environments configured on the control node:
+
+[source,shell,role=execute]
+----
+ansible-navigator images
+----
+
+image::navigator-images.png[]
+
+NOTE: The output you see might differ from the above output, but you should see at least the one image configured in the file.
+
+This command gives you information about all currently installed Execution Environments or EEs for short. Investigate an EE by pressing the corresponding number. For example pressing **0** with the above example will open the `ee-supported-rhel8` execution environment:
+
+image::navigator-ee-menu.png[]
+
+Selecting **2** for `Ansible version and collections` will show us all Ansible Collections installed on that particular EE, and the version of `ansible-core`:
+
+image::navigator-ee-collections.png[]
+
+To get back to the preceding view in `ansible-navigator` press **Esc**, if needed several times.
+The last press in the main menu will get you out of Navigator.
+Alternatively you can type **:q** anywhere to exit at once (familiar with Vi?).

@@ -1,0 +1,279 @@
+= Secure the Automation Supply Chain
+
+Project signing is a relatively new feature in Red Hat Ansible Automation Platform 2. Users can sign content like playbooks, inventories, etc that live in a project (backed by a version control repository) and configure automation controller to verify whether or not that content has been changed form the signed versions. This way users can make sure the supply chain remains untampered, from the source repository to running an automation job.
+
+The best way to understand how this works is, as most times, to give it a try. Read on!
+
+== Lab Scenario
+
+In your lab environment you'll find an instance of the `Gitea` Git service. A Git repository with Ansible content has been cloned to it already (it's actually the repository holding supporting Playbooks for this lab).
+
+You will clone this repository locally to you bastion host and then see how automation controller can be used to check for signed content.
+
+== Prepare Repository
+
+=== Access Gitea
+
+Point your browser to
+
+{gitea_web_ui_url}[window=_blank]
+
+Log in to Gitea as user `{gitea_web_ui_username}` with the password `{gitea_web_ui_password}`.
+
+Look around, to the right in the UI you'll see a list of repositories, click the `{gitea_web_ui_username}/playbooks-adv-controller` link. This will take you to the repository.
+
+=== Clone the repository
+
+Next, you need the repository from Gitea in your home directory on the bastion host. As you have already cloned this repo in the first chapter it should already exist. To check, in your VS Code terminal run:
+
+[source,shell,subs="attributes"]
+----
+ls -l
+
+total 4
+drwxr-xr-x. 5 lab-user users 4096 Apr 24 13:10 playbooks-adv-controller
+----
+
+You have to configure Git locally, run:
+
+[source,shell,role=execute,subs="attributes"]
+----
+cd ~/playbooks-adv-controller
+git config --global user.name "Your Name"
+git config --global user.email you@example.com
+----
+
+== Sign Repository Content
+
+By now we have a local Git repository with some Ansible content, nothing special yet. Now we'll sign the repository content.
+
+We will create a GnuPG key pair to sign our project locally. Asynchronous keys are used to validate the integrity of a project’s content. The private key from the key pair is used at the point of signing and a public key is used to verify that the content has not been manipulated in any way. The public key will be used in automation controller to verify signatures later on.
+
+=== Prepare GPG
+
+First we have to create the keys we'll use with GPG. Create the file `/home/{gitea_web_ui_username}/gpg.txt` using your favorite editor with the following content:
+
+[source,properties,role=execute]
+----
+%echo Generating a basic OpenPGP key
+Key-Type: default
+Key-Length: 4096
+Subkey-Type: default
+Subkey-Length: default
+Name-Real: VerySecure
+Name-Comment: with no passphrase
+Name-Email: student@localhost
+Expire-Date: 0
+%no-ask-passphrase
+%no-protection
+# Do a commit here, so that we can later print "done" :-)
+%commit
+%echo done
+----
+
+Think of this file as the instructions given to the GnuPG library on the system about the type of key pair we want to create.
+This creates a key pair _without_ a passphrase (of course, normally you would want to have a passphrase for https://www.redhat.com/sysadmin/creating-gpg-keypairs[your private GPG key]).
+
+Now create a GPG key pair using the `gpg.txt` file. Run the following commands in the Terminal window to create the key pair.
+
+The first command will create the key pair using the `gpg.txt` file:
+
+[source,shell,role=execute]
+----
+gpg --batch --gen-key ~/gpg.txt
+----
+
+NOTE: It can take a few moments for this command to complete!
+
+The next command will export the public key between the plaintext headers and footers in the file called `signing_demo.asc`. This is a more conventional method of sharing public keys.
+
+[source,shell,role=execute]
+----
+gpg --output ~/signing_demo.asc --armor --export
+----
+
+Check the content of the exported public key using the below command.
+
+[source,shell,role=execute]
+----
+cat ~/signing_demo.asc
+----
+
+We will use all the content of this file in the next steps, when we setup the verification of projects in automation controller.
+
+And finally, run the below command to list the gpg keys that exist on the system, this should have only one (valid) key pair, the one just created.
+
+[source,shell,role=execute]
+----
+gpg --list-keys
+----
+
+=== Configure ansible-sign and sign playbooks
+
+Now that we have prepared the signing keys let's sign our `playbooks-adv-controller` repository using the `ansible-sign` tool. First install the tool itself:
+
+[source,shell,role=execute]
+----
+sudo dnf install ansible-sign -y
+----
+
+The first step toward signing content is to create a file that tells `ansible-sign` which files to protect. This file should be called `MANIFEST.in` and reside in the project root directory. So go ahead and create the file `/home/{gitea_web_ui_username}/playbooks-adv-controller/MANIFEST.in` using your favorite editor with the following content:
+
+[source,shell,role=execute,subs="attributes"]
+----
+recursive-exclude .git *
+recursive-exclude constructed-inventory *
+recursive-exclude inventory *
+exclude .ansible-lint
+exclude .gitignore
+include *.yml
+----
+
+The above command will create a new `MANIFEST.in` file in the `playbooks-adv-controller` local repository. In this case we just include every file in the repository root that matches `*.yml` and exclude everything else. In the next step we will finally sign the files listed in the `MANIFEST.in` file.
+
+[source,shell,role=execute,subs="attributes"]
+----
+ansible-sign project gpg-sign /home/{bastion_ssh_user_name}/playbooks-adv-controller
+----
+
+The above command tells the `ansible-sign` tool to gpg-sign the `playbooks-adv-controller` project locally.
+
+Once you run the command, you will see that the GPG signing was successful and you can confirm that by looking at the new files that were createdby `ansible-sign`:
+
+[source,shell,role=execute,subs=attributes]
+----
+head -n-0 /home/{bastion_ssh_user_name}/playbooks-adv-controller/.ansible-sign/sha256sum.*
+----
+
+`ansible-sign` created a file with the checksums of the files listed in `MANIFEST.in` and another file with the signature of this file.
+
+TIP: `head -n-0` is a trick to output the content of multiple files separated by their names as header between arrows.
+
+=== Push content to Gitea
+
+To make the repository available as a Project to automation controller, the new files must be pushed from our local Git clone to the Gitea repository. Add the new files for git staging:
+
+[source,shell,role=execute]
+----
+cd ~/playbooks-adv-controller
+git add .ansible-sign/ MANIFEST.in
+git status
+----
+
+Commit the changes:
+
+[source,shell,role=execute]
+----
+git commit -m "Adding signatures for project"
+----
+
+Push the new files to your Git repository server:
+
+[source,shell,role=execute]
+----
+git push
+----
+
+VS Code will open a _small_ dialog at the top of the window asking for username and password, enter `{gitea_web_ui_username}` and as password `{gitea_web_ui_password}`.
+
+== Setup automation controller
+
+Now, we have to setup automation controller to use and verify our signed content.
+
+=== Create Credential with signing public key
+
+The first step is to create a new Credential with the public key file that we exported already. In the Terminal run:
+
+[source,shell,role=execute]
+----
+cat ~/signing_demo.asc
+----
+
+Copy _all_ of its contents _including_ `-----BEGIN PGP PUBLIC KEY BLOCK-----` and `-----END PGP PUBLIC KEY BLOCK-----`.
+Go to the automation controller web UI tab and follow **Resources** ⇒ **Credentials** on the left-hand side menu:
+
+* click on the blue **Add** button.
+* **Name**: ansible-sign
+* **Credential Type**: GPG Public Key
+* This will open a textbox for you to paste the public key that is in the Clipboard. Paste the public key and click **Save**.
+
+This will add the public key as a Credential in your automation controller.
+
+=== Create Project with signed content
+
+To configure the Gitea repository as a Project we need an SCM credential. In the automation controller web UI click on **Resources ⇒ Credentials** on the left-hand side menu:
+
+* Click on the blue **Add** button.
+* **Name**: gitea
+* **Organization**: Default
+* **Credential Type**: Source Control
+* **Username**: {gitea_web_ui_username}
+* **Password**: {gitea_web_ui_password}
+* Click **Save**.
+
+Now, to create the Project, click on **Resources ⇒ Projects** on the left-hand side menu:
+
+* Click on the blue **Add** button
+* **Name**: Signed Project
+* **Source Control Type**: Git
+* **Content Signature Validation Credential**: ansible-sign
+* **Source Control URL**: The clone URL of your Gitea repository, {gitea_web_ui_url}/{gitea_web_ui_username}/playbooks-adv-controller.git
+* **Source Control Credential**: gitea
+* Click **Save**
+
+The important part of the Project configuration is **Content Signature Validation Credential**, this tells automation controller to use the GPG key in the credentials to verify the repository.
+
+== Check if signatures were validated in controller
+
+Let's check if the signatures have been checked during the initial Project sync when you hit **Save**.
+
+Click on **Jobs** on the left menu and then click the most recent job that ran the project sync for the **Signed Project**. If this job was successful, that means the signature validation was successful. You can also verify this by looking at the tasks in the job run, scroll the job run to find the below tasks:
+
+[source,shell]
+----
+PLAY [Perform project signature/checksum verification] *************************
+
+TASK [Verify project content using GPG signature] ******************************
+ok: [localhost]
+
+TASK [Verify project content against checksum manifest] ************************
+ok: [localhost]
+----
+
+Above tasks indicate that the signature validation was successful.
+
+== Check with tampered Content
+
+The last step in this lab is to check, if automation controller picks up if the content has been changed without re-signing it, indicating somebody has tampered with the content.
+
+Open the file `/home/{gitea_web_ui_username}/playbooks-adv-controller/apache_install.yml` in your VS Code and change something, like set `enabled: false`.
+
+Push the new version to the Git repository:
+
+[source,shell,role=execute]
+----
+git add apache_install.yml
+git commit -m "changing file"
+git push
+----
+
+VS Code will again open a _small_ dialog at the top of the window asking for username and password, enter `{gitea_web_ui_username}` and as password `{gitea_web_ui_password}`.
+
+If this change was legit, you would have re-signed the repository content. This way automation controller should recognize the signature of the file is not valid anymore and fail the repository sync. Give it a try:
+
+* Go to the automation controller web UI **Resources ⇒ Project** and start a sync of the **Signed Project** repository.
+* Check the result in the **Jobs** list!
+
+The sync job should fail and the output should clearly indicate why:
+
+[source,shell]
+----
+TASK [Verify project content using GPG signature] ******************************
+ok: [localhost]
+
+TASK [Verify project content against checksum manifest] ************************
+
+fatal: [localhost]: FAILED! => {"changed": false, "msg": "Checksum mismatch: apache_install.yml"}
+----
+
+We changed a signed file and skipped signing it to see the behavior in automation controller. Automation controller failed the verification and shows which files were not signed in the Project refusing to sync the project and consequently running the Playbook.

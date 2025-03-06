@@ -1,138 +1,107 @@
-= Managing an Application from GitHub
+# Configure automation controller resources with Ansible
 
-In the first half of this workshop, we packaged an application into this portable container format manually using rpms.
-In the second half, we will consider that you may want to manage software from GitHub or some kind of software versioning application.
-Rather than installing rpms, we have individual software files and pull them out of that version control into a group of systems.
+This is an advanced automation controller lab, so we don’t really want you to use the web UI for everything. To fully embrace automation and adopt the https://en.wikipedia.org/wiki/Infrastructure_as_code[infrastructure as code,window=_blank] methodology, **we want to use Ansible to configure our automation controller** cluster.
 
-== Install RHEL 8 UBI
+Since automation controller is exposing all of its functionality via REST API, we can automate everything.
+Instead of using the API directly, it is highly recommended to use the https://github.com/ansible/awx/tree/devel/awx_collection[AWX,window=_blank] or https://cloud.redhat.com/ansible/automation-hub/repo/published/ansible/controller[automation controller,window=_blank] Ansible Collection (the second link will only work for you if you have an active Red Hat Ansible Automation Platform Subscription) to setup, configure and maintain your Red Hat Ansible Automation Platform automation controller using Ansible.
 
-In this lab, we will be using a different Red Hat Enterprise Linux version in my container. 
+== The Scenario
 
-. Verify the host system release 
+For the next chapters we need a number of resources configured in automation controller:
 
+- Static **Inventory** with two hosts
+- **Credentials**
+- Two **Projects**
+- Two **Job Templates**
+
+This would involve a lot of error prone clicking in the web UI, so you'll use the pro way: a playbook was prepared upfront to save time, but you will still learn how to use Ansible to configure automation controller.
+
+== Authentication
+
+The Ansible modules we use in the playbook need to talk to automation controller and require authentication, of course. There are a number of ways to accomplish this, you could e.g. set the URL/user name/password as environment variables.
+
+In this lab we use a little trick to save time and make it less error prone.
+We set the credentials and other values directly in the `.ansible-navigator.yml` file in your home directory, so `ansible-navigator` will pick them up with every run.
+Have a look for yourself in your terminal on the bastion host:
+
+[source,shell,role=execute]
+----
+cat ~/.ansible-navigator.yml
+----
+
+The result should look like this:
+
+[source,yaml,subs="attributes"]
+----
+---
+ansible-navigator:
+  execution-environment:
+    image: "{private_automation_hub_url}/ee-supported-rhel8:latest"
+    enabled: true
+    container-engine: podman
+    pull:
+      policy: missing
+    volume-mounts:
+       - {dest: /etc/ansible/, src: /etc/ansible/}
+    environment-variables:
+      pass:
+        - GUID
+      set:
+        CONTROLLER_HOST: "{ansible_controller_web_ui_url}"
+        CONTROLLER_USERNAME: "admin"
+        CONTROLLER_PASSWORD: "{ansible_controller_admin_password}"
+        CONTROLLER_VERIFY_SSL: "True"
+----
+
+The env variables prefixed with `CONTROLLER_` are the connection and credential parameters.
+
+NOTE: For your convenience we added the authentication credentials for automation controller to the configuration, so you don't have to manually log in. In most real world scenarios you probably don't want to do this and will not store your password in a clear text configuration file.
+
+TIP: for performance and security reasons, it is recommended "in real life" to generate and use a token for your automation.
+Check the referenced documentation for details on how to do this.
+
+== Create the Playbook
+
+Now, let's get the Playbook. In your VS Code terminal (or SSH session) run:
+
+[source,shell,role=execute,subs="attributes"]
+----
+git clone {gitea_web_ui_url}/lab-user/playbooks-adv-controller.git
+cd playbooks-adv-controller
+cat configure-controller.yml
+----
+
+Use `cat` or the VS Code editor to have a good look at what the `configure-controller.yml` Playbook is supposed to do.
+
+Since we are calling the REST API of automation controller, the Ansible playbook is run against **localhost**, but the modules will connect to the URL provided by the **CONTROLLER_HOST** environment variable set for you in `~/.ansible-navigator.yml`.
+
+Tasks:
+
+* **Create an inventory**: An inventory is created.
+* **Add hosts to inventory**: Hosts are added to the inventory.
+* **Machine Credentials**: Machine credentials are created.
 +
-[source,bash]
+TIP: SSH keys have already been created and distributed in your lab environment and `sudo` has been setup on the managed hosts to allow password-less login. When you SSH into a host as a regular user from the bastion node you will become user **ec2-user** on the host you logged in.
+
+* **Lab Project**: A Project is created, the content used in this lab is hosted on GitLab in the project https://gitlab.com/ansible-labs-crew/playbooks-adv-controller[https://gitlab.com/ansible-labs-crew/playbooks-adv-controller,window=_blank].
+
+NOTE: SSH keys have already been created and distributed in your lab environment and `sudo` has been setup on the managed hosts to allow password-less login. When you SSH into a host as user a regular user from bastion node you will become user **ec2-user** on the host you logged in.
+
+=== Run the Playbook
+
+After you have inspected the Playbook finally run it:
+
+[source,shell,role=execute]
 ----
-cat /etc/redhat-release
-----
-+ 
-NOTE: The `bastion` system is Red Hat Enterprise Linux 9, and when you built the previous container, you used the UBI9 image. This means both the image and the container were built off the same Red Hat Enterprise Linux packages. 
-
-. As we did previously in this lab, Use `buildah from` to pull down the Red Hat Enterprise Linux 8 UBI.
-
-+
-[source,bash]
-----
-buildah from registry.access.redhat.com/ubi8/ubi
-----
-
-NOTE: Because you already pulled one image named `ubi-working-container` this one is called `ubi-working-container-1`. 
-
-[#prerequisites]
-== Install Prerequisites
-
-Now that you have a working container, you will use the same process as before installing all the prerequisites, changing config files, and manipulating the contents of this container to be in the desired state.
-
-The software you will install is a JavaScript-based game that runs on a web browser. As before in the lab, use dnf to install software inside the container. 
-
-. Use `buildah run` and install Apache (`httpd`) into the `ubi-working-container-1` container. 
-+
-[source,bash]
-----
-buildah run ubi-working-container-1 -- dnf -y install httpd
+ansible-navigator run configure-controller.yml
 ----
 
-== Enable Service
+While in `ansible-navigator` press a line number e.g. to get more information about a play or tasks. Note: this works only for less then 10 lines, if you have more, you need to press `:` first.
+To leave press `Esc` multiple times to get up again in the views and eventually out of Navigator (**but** wait until the playbook is marked as successful before you do that!).
 
-The next thing to do is to use a systemctl to enable the service. The ubi-init provides full systemd service to the container.
-This will start up any of the services that are enabled. 
+After the successful run, log into your {ansible_controller_web_ui_url}[automation controller web UI,window=_blank], using the user *admin* and the usual password *{ansible_controller_admin_password}*.
+Make sure that you see the configured objects and a job "Source Control Update" to synchronize the Git project.
 
-. Enable the `httpd` service using `buildah run`
-
-+
-[source,bash]
-----
-buildah run ubi-working-container-1 -- systemctl enable httpd
-----
-
-NOTE: The UBI standard image doesn't have systemd installed on it by default. The `ubi-init` container image does include systemd. Plan accordingly to which image you use to build applications.  
-
-== Explore Source Materials
-
-A GitHub repository has already been synchronized to `/home/devops/clumsy-bird/` This repository contains the configurations for your application.
-
-. Verify the repository is cloned inside the `/home/devops/` directory
-+
-[source,bash]
-----
-cd /home/devops/
-----
-
-+
-[source,bash]
-----
-git clone https://github.com/ellisonleao/clumsy-bird
-----
-+
-NOTE: The output states that the software has already been checked out. 
-+
-. Explore the JavaScript contents, index files, and everything else that we need for this web-based JavaScript software.
-+
-[source,bash,role=execute]
-----
-ls clumsy-bird
-----
-
-== Add Source Materials to Container
-
-. Now that you have verified the source materials exist, you will put the software inside of my container image using the `buildah copy` command.
-+
-[source,bash]
-----
-buildah copy ubi-working-container-1 clumsy-bird /var/www/html
-----
-
-[#container]
-== Enable Container in Background
-
-In the previous section of this lab, you ran the game natively through interactive mode. Because you are now building a web application you will need to run the container in the background and access it through a web address. 
-
-. Execute `buildah config` to specify a port and initialize the container. 
-
-+
-[source,bash]
-----
-buildah config --port 80 --cmd "/usr/sbin/init" ubi-working-container-1
-----
-
-NOTE: The command makes a configuration change to this container. I'm configuring this container to accept connections to its port 80. When the container starts up, it should run the init command, which, in this case, is going to be the Apache daemon right from earlier when I enabled it.
-
-== Commit Container and Deploy
-
-. Now that we have a container in a working configured state, it is time to make that permanent by committing it to a container image called `clumsy-bird`
-+
-[source,bash]
-----
-buildah commit ubi-working-container-1 clumsy-bird
-----
-
-. Verify that the image was created with `podman`
-+
-[source,bash]
-----
-podman images
-----
-+
-. Run the container Now it's time to run the container. 
-+
-[source,bash]
-----
-podman run -d -p 8500:80 clumsy-bird
-----
-
-== Verify Application
-
-Verify that the application is running by navigating to
-
-http://bastion.{guid}.example.opentlc.com:8500
-
+TIP: If you run this Ansible Playbook multiple times, you will notice the **ansible.controller.credential** module is not idempotent! Since automation controller stores the SSH key encrypted, the Ansible Module is unable to verify it has already been set and didn't change. This is what we want and expect from a secure system, but it also means Ansible has no means to verify it and hence overrides the SSH key or password every time the Ansible Playbook is executed.
+This can be overridden with the `update_secrets` parameter.
+Also note that the `credential_type` value is simply the type's name.

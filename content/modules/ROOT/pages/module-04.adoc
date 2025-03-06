@@ -1,0 +1,128 @@
+# Use surveys and the revamped access rights to give your users self-service access
+
+Surveys allow us to build input dialogs and wizards to guide users through the process of providing the required data to run a job. There are different survey fields including drop down lists, password fields, or simple input boxes.
+
+== The Scenario
+
+The App and Ops teams are quite happy with how you setup the workflow to combine both teams' Ansible content into one automation job. But something else came up, as the app team has a new Night Shift member.
+They would like to allow this new member:
+
+- Changing the content of the web site NodeJS is serving
+- Running the webapp deployment job.
+
+However, the new team member should not be allowed to change anything else in automation controller for now. Sounds like a job for automation controller **Surveys** and **Role Based Access Control**!
+
+== Add the Survey
+
+In automation controller surveys allow to define the content of variables before running a job. The "Hello World!" our NodeJS application prints out, is actually defined in the dev https://gitlab.com/ansible-labs-crew/playbooks-dev/-/raw/master/install_node_app.yml[Playbook,window=_blank] in the variable `content`.
+
+TIP: If the automation controller UI is not open anymore, refer to the `Lab Access` page for the access details.
+
+So we just need to add a survey to our **Deploy Webapplication** Workflow template. In the automation controller UI, open **Resources ⇒ Templates ⇒ Deploy Webapplication**, then:
+
+- Go to the **Survey** tab
+- Click **Add** and fill in:
+** **Question:** Web Content
+** **Answer variable name:** content
+** **Answer type:** Text
+- Click **Save**
+
+To enable the survey, while still on the Survey tab switch the slider button from **Survey Disabled** to **Survey Enabled** (it turns from grey to blue).
+
+== Test the Survey
+
+Launch the **Deploy Webapplication** Workflow Template by clicking the rocket icon on the **Resources ⇒ Templates** page.
+
+Before the actual launch the survey will ask for **Web Content**. Fill in some text and click **Next**. The next window shows the launch details and at the bottom the values the survey has prompted for. If all is good run the Job by clicking **Launch**.
+
+TIP: Note how the survey content is shown on the **Details** tab of the Job view as **Variables**.
+From an Ansible perspective they are actually nothing else than extra variables.
+
+After the job has completed, check the result. In your **VS Code** terminal, run again:
+
+[subs="attributes",source,bash,role=execute]
+----
+curl http://node1.{guid}.internal/nodejs
+----
+
+The string returned should match what you entered in the survey.
+
+== Create a restricted User
+
+The second part of your task is to add the new Night Shift user who is only allowed to execute the **Deploy Webapplication** Workflow, but nothing else. For this you have to leverage the RBAC controls of automation controller.
+
+=== Create User
+
+Create the user:
+
+- In the automation controller web UI menu under **Access** ⇒ **Users**
+- Click the **Add** button
+- Fill in the values for the new user:
+** **First Name:** Night
+** **Last Name:** Shift
+** **Email:** nightshift@example.com
+** **Username:** nightshift
+** **Password:** {ansible_controller_admin_password}
+** **Confirm Password:** {ansible_controller_admin_password}
+** **User Type:** Normal User
+** **Organization:** Default
+- Click **Save**
+
+=== Create Team
+
+A Team is a subdivision of an organization with associated users, projects, credentials, and permissions. Teams provide a means to implement role based access control schemes and delegate responsibilities across organizations. For instance, permissions may be granted to a whole Team rather than each user on the Team.
+
+Create a Team:
+
+- Go to **Access ⇒ Teams**.
+- Click the blue Add button and create a team named `Execute only`.
+- Click **Save**
+
+Now you can add the new user to the team:
+
+- Return to **Access ⇒ Users** and click the `nightshift` user.
+- Jump to the **Teams** tab of user `nightshift`.
+- Click the **Associate** button and check the **Execute only** Team.
+- Click **Save**
+
+User `nightshift` is now a member of the **Execute only** Team.
+
+=== Grant Permissions
+
+To allow users or teams to actually do anything, you have to set permissions. The members of the Team **Execute only** should only be allowed to modify the NodeJS content.
+
+Add the permission to use the template:
+
+- Open the Team **Execute only** under **Access ⇒ Teams**
+- Go to the **Roles** tab and click the blue Add button.
+- A new window opens. You can choose to set permissions for a number of resources.
+** Select the resource type **Workflow job templates**
+** Click **Next**
+** Choose the `Deploy Webapplication` Template by checking the box next to it.
+** Click **Next**
+** Choose the role **Execute**
+- Click **Save**
+
+If you go to **Resources** ⇒ **Templates**, open the `Deploy Webapplication` workflow, and go to the **Access** tab, you'll see an overview of all RBAC entries.
+
+== Test Restricted User
+
+You've now setup the required user and permissions.
+To test everything, log out of automation controller’s web UI and in again as the `nightshift` user with password **{ansible_controller_admin_password}**.
+
+- Go to the **Templates** view, you should notice for **nightshift** only the **Deploy Webapplication** template is listed. The user is allowed to view and launch, but not to edit the Template. Just open the template and try to change it, there is not even an **Edit** button.
+- Run the Template by clicking the rocket icon. Enter the survey content to your liking and launch the job.
+- Once the job is finished, check the result by executing once again in the **VS Code** terminal:
+
+[subs="attributes",source,bash,role=execute]
+----
+curl http://node1.{guid}.internal/nodejs
+----
+
+- In the web UI, log out user **nightshift** and in again as **admin**.
+
+Recall what you have just done:
+
+* You provided the permission to execute an automation workflow to another user without handing out your credentials or giving the user the ability to change the automation code.
+
+* And yet, at the same time the user can still modify details based on the survey you created.

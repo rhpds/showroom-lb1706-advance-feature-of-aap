@@ -1,19 +1,30 @@
 name: modules
-title: Default Title
+title: Introduction
 version: master
 nav:
   - modules/ROOT/nav.adoc
 
 asciidoc:
   attributes:
-    lab_name: "I'm the lab_name var"
+    lab_name: "Advanced features of automation controller"
     release-version: master
     page-pagination: true
-    my_var: "foo"
-    guid: my-guid
+    vscode_web_ui_url: https://bastion.myguid.mysandbox.opentlc.com:8443
+    vscode_web_ui_password: mypassword
+    bastion_host_name: bastion.myguid.mysandbox.opentlc.com
+    bastion_ssh_user_name: lab-user
+    private_automation_hub_url: https://pah.myguid.mysandbox.opentlc.com
+    ansible_controller_web_ui_url: https://autoctl1.myguid.mysandbox.opentlc.com
+    ansible_controller_admin_password: mypassword
+    gitea_web_ui_url: https://bastion.myguid.mysandbox.opentlc.com:488
+    gitea_web_ui_username: lab-user
+    gitea_web_ui_password: mypassword
+    guid: myguid
     ssh_user: devops
     ssh_password: devops
-    ssh_command: ssh someone@example.com
+    ssh_command: ssh devops@bastion.{guid}.example.opentlc.com
     page-links:
-    - url: https://redhat.com
-      text: Red Hat
+      - link: https://www.redhat.com
+        text: Red Hat
+      - link: https://www.redhat.com/en/summit
+        text: Summit
