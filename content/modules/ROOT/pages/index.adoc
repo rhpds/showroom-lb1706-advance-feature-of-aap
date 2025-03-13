@@ -2,25 +2,35 @@
 
 == About this Lab
 
-You have already used Ansible Automation quite a bit and have started to look into Ansible Automation Platform automation controller? Or you are already using automation controller (fka Tower)? Cool.
-We prepared this lab to give you a hands-on introduction to some of the more advanced features of the automation controller. You’ll learn to:
+Already know the basics of Red Hat Ansible Automation Platform and want more?
 
-- Automate the automation: Configure automation controller with Ansible.
-- Use controller workflows to allow teams to work more efficiently together.
-- Use surveys to provide self-service to your automation users.
-- Use dynamic inventories and the new constructed inventory feature for scale and flexibility.
-- Secure the automation supply chain: Use content signing to make sure only approved content is run in automation controller.
+In this hands-on lab, we'll introduce you to some advanced capabilities of automation controller so can benefit even more from using Ansible Automation Platform (often abbreviated as AAP).
+You'll learn how to:
+
+* Configure automation controller resources with Ansible 
+* Employ controller workflows so teams can collaborate more efficiently.
+* Use surveys and the revamped RBAC system to give your users self-service access.
+* Use dynamic inventories to scale your automation.
+* Get more flexibility with the constructed inventory feature.
+* Secure the automation supply chain with content signing that ensures only approved content runs in automation controller.
+
+NOTE: This lab is suitable for anybody with basic Ansible Automation Platform experience.
 
 
 == Lab Infrastructure
 
 Your lab includes a number of servers:
 
-- A bastion host running VS Code server.
-- An automation platform cluster with a separate DB host.
+- A bastion host running VS Code server and Gitea server.
+  You'll also use the command line there to do some Ansible development.
+- A one-node AAP cluster.
 - Two managed RHEL 9 hosts.
 
-TIP: All access information has been summarized for your convenience on page link:lab-access.html[Lab Access], accessible in the TOC to the right.
+[TIP]
+====
+. All access information has been summarized for your convenience on page link:lab-access.html[Lab Access],
+. This page and all others are accessible from the upper left corner image:corner_menu.png[role=half-width]
+====
 
 == Working the Lab
 
