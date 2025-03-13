@@ -20,11 +20,8 @@ asciidoc:
     gitea_web_ui_username: lab-user
     gitea_web_ui_password: mypassword
     guid: myguid
+    node1_hostname: node1.example.com
+    node2_hostname: node2.example.com
     ssh_user: devops
     ssh_password: devops
     ssh_command: ssh devops@bastion.{guid}.example.opentlc.com
-    page-links:
-      - link: https://www.redhat.com
-        text: Red Hat
-      - link: https://www.redhat.com/en/summit
-        text: Summit
