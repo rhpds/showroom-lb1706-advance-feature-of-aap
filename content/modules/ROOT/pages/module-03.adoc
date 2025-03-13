@@ -98,7 +98,7 @@ After the job has finished, check if everything worked fine. To test the NodeJS 
 
 [subs="attributes",source,bash,role=execute]
 ----
-curl http://node1.{guid}.internal/nodejs
+curl http://{node1_hostname}/nodejs
 ----
 
 You should be greeted with a friendly `Hello World`. Well done!

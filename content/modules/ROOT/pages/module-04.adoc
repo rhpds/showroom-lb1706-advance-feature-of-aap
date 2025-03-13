@@ -42,7 +42,7 @@ After the job has completed, check the result. In your **VS Code** terminal, run
 
 [subs="attributes",source,bash,role=execute]
 ----
-curl http://node1.{guid}.internal/nodejs
+curl http://{node1_hostname}/nodejs
 ----
 
 The string returned should match what you entered in the survey.
@@ -116,7 +116,7 @@ To test everything, log out of automation controller’s web UI and in again as 
 
 [subs="attributes",source,bash,role=execute]
 ----
-curl http://node1.{guid}.internal/nodejs
+curl http://{node1_hostname}/nodejs
 ----
 
 - In the web UI, log out user **nightshift** and in again as **admin**.
