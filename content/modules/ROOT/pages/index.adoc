@@ -49,13 +49,13 @@ TIP: The command line can wrap on the HTML page from time to time. Therefore the
 
 Your main point of contact with the lab is **VS Code Server**, providing a VS Code-experience in your browser. You'll use VS Code to open terminals and to edit files (either in the build-in GUI editor or just using your favorite editor on the command line). 
 
-Now, open **VS Code** by clicking on the URL {vscode_web_ui_url}[window=_blank].
+Now, open **VS Code** by clicking on the URL {z_vscode_web_ui_url}[window=_blank].
 
 You should be greeted with a login screen:
 
 image::vscode-pwd.png[500,300]
 
-Use the password **{vscode_web_ui_password}** to log in to the **VS Code** server web UI. Now open a new terminal by heading to the menu item **Terminal** at the top of the page and select **New Terminal**. A new section will appear in the lower half of the screen and you will be greeted with a prompt:
+Use the password **{z_vscode_web_ui_password}** to log in to the **VS Code** server web UI. Now open a new terminal by heading to the menu item **Terminal** at the top of the page and select **New Terminal**. A new section will appear in the lower half of the screen and you will be greeted with a prompt:
 
 image::vscode-terminal.png[]
 
@@ -67,12 +67,12 @@ You can of course use SSH directly to access the bastion node when you have an S
 
 [subs="attributes",source,shell,role=execute]
 ----
-ssh lab-user@{bastion_host_name}
+ssh {z_ssh_user}@{z_bastion_host_name}
 ----
 
-The password is still the same: {ansible_controller_admin_password}
+The password is still the same: {z_ansible_controller_admin_password}
 
-TIP: The user to access the terminal is `lab-user`, but your bastion node is setup to let you become `root` using _sudo_ without a password.
+TIP: The user to access the terminal is `{z_ssh_user}`, but your bastion node is setup to let you become `root` using _sudo_ without a password.
 
 TIP: All access information has been summarized for your convenience under xref:lab-access.adoc[Lab Access], accessible in the navigation menu to the right.
 

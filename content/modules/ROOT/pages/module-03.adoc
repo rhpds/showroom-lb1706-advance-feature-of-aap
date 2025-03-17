@@ -40,7 +40,7 @@ TIP: If you want to know what the Playbooks look like, check out the Gitlab URL 
 
 == Access the automation controller UI
 
-In your browser open {ansible_controller_web_ui_url}[window=_blank] and login as user `{ansible_controller_admin_username}` with the password `{ansible_controller_admin_password}`.
+In your browser open {z_ansible_controller_web_ui_url}[window=_blank] and login as user `{z_ansible_controller_admin_username}` with the password `{z_ansible_controller_admin_password}`.
 
 == Configure the Workflow
 
