@@ -36,7 +36,7 @@ The result should look like this:
 ---
 ansible-navigator:
   execution-environment:
-    image: "{private_automation_hub_url}/ee-supported-rhel8:latest"
+    image: "{z_private_automation_hub_url}/ee-supported-rhel8:latest"
     enabled: true
     container-engine: podman
     pull:
@@ -47,9 +47,9 @@ ansible-navigator:
       pass:
         - GUID
       set:
-        CONTROLLER_HOST: "{ansible_controller_web_ui_url}"
-        CONTROLLER_USERNAME: "{ansible_controller_admin_username}"
-        CONTROLLER_PASSWORD: "{ansible_controller_admin_password}"
+        CONTROLLER_HOST: "{z_ansible_controller_web_ui_url}"
+        CONTROLLER_USERNAME: "{z_ansible_controller_admin_username}"
+        CONTROLLER_PASSWORD: "{z_ansible_controller_admin_password}"
         CONTROLLER_VERIFY_SSL: "True"
 ----
 
@@ -66,7 +66,7 @@ Now, let's get the Playbook. In your VS Code terminal (or SSH session) run:
 
 [source,shell,role=execute,subs="attributes"]
 ----
-git clone {gitea_web_ui_url}/lab-user/playbooks-adv-controller.git
+git clone {z_gitea_web_ui_url}/{z_gitea_web_ui_username}/playbooks-adv-controller.git
 cd playbooks-adv-controller
 cat configure-controller.yml
 ----
@@ -99,7 +99,7 @@ ansible-navigator run configure-controller.yml
 While in `ansible-navigator` press a line number e.g. to get more information about a play or tasks. Note: this works only for less then 10 lines, if you have more, you need to press `:` first.
 To leave press `Esc` multiple times to get up again in the views and eventually out of Navigator (**but** wait until the playbook is marked as successful before you do that!).
 
-After the successful run, log into your {ansible_controller_web_ui_url}[automation controller web UI,window=_blank], using the user *{ansible_controller_admin_username}* and the usual password *{ansible_controller_admin_password}*.
+After the successful run, log into your {z_ansible_controller_web_ui_url}[automation controller web UI,window=_blank], using the user *{z_ansible_controller_admin_username}* and the usual password *{z_ansible_controller_admin_password}*.
 Make sure that you see the configured objects and a job "Source Control Update" to synchronize the Git project.
 
 TIP: If you run this Ansible Playbook multiple times, you will notice the **ansible.controller.credential** module is not idempotent! Since automation controller stores the SSH key encrypted, the Ansible Module is unable to verify it has already been set and didn't change. This is what we want and expect from a secure system, but it also means Ansible has no means to verify it and hence overrides the SSH key or password every time the Ansible Playbook is executed.

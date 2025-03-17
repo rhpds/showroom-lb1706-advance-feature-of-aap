@@ -27,7 +27,7 @@ Use curl to query your "external inventory source":
 
 [source,shell,role=execute,subs="attributes"]
 ----
-curl {gitea_web_ui_url}/lab-user/playbooks-adv-controller/raw/branch/main/constructed-inventory/inventory_list
+curl {z_gitea_web_ui_url}/{z_gitea_web_ui_username}/playbooks-adv-controller/raw/branch/main/constructed-inventory/inventory_list
 ----
 
 This should give you the following output:
@@ -103,7 +103,7 @@ As looping over all hosts and calling the script with *`--host`* can be pretty s
 #!/bin/bash
 
 if [ "$1" == "--list" ] ; then
-    curl -sS {gitea_web_ui_url}/lab-user/playbooks-adv-controller/raw/branch/main/constructed-inventory/inventory_list
+    curl -sS {z_gitea_web_ui_url}/{z_gitea_web_ui_username}/playbooks-adv-controller/raw/branch/main/constructed-inventory/inventory_list
 elif [ "$1" == "--host" ]; then
     echo '{"_meta": {"hostvars": {}}}'
 else
@@ -116,9 +116,9 @@ What it basically does is to return the data collected by curl when called with 
 But before we integrate the custom inventory plugin into our automation controller, it’s a good idea to test it on the command line:
 
 * Bring up your VS Code browser tab, refer to the xref:lab-access.adoc[Lab Access] page if the tab was closed.
-* In either the visual editor or in the terminal using your favorite command line editor, create the file `/home/{bastion_ssh_user_name}/dyninv.sh` with the content of the Bash script shown above.
+* In either the visual editor or in the terminal using your favorite command line editor, create the file `/home/{z_bastion_ssh_user_name}/dyninv.sh` with the content of the Bash script shown above.
 
-TIP: Make sure to really create the script in `/home/{bastion_ssh_user_name}/`
+TIP: Make sure to really create the script in `/home/{z_bastion_ssh_user_name}/`
 
 * Make the script executable:
 +

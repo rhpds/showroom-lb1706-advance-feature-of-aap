@@ -16,22 +16,22 @@ You will clone this repository locally to you bastion host and then see how auto
 
 Point your browser to
 
-{gitea_web_ui_url}[window=_blank]
+{z_gitea_web_ui_url}[window=_blank]
 
-Log in to Gitea as user `{gitea_web_ui_username}` with the password `{gitea_web_ui_password}`.
+Log in to Gitea as user `{z_gitea_web_ui_username}` with the password `{z_gitea_web_ui_password}`.
 
-Look around, to the right in the UI you'll see a list of repositories, click the `{gitea_web_ui_username}/playbooks-adv-controller` link. This will take you to the repository.
+Look around, to the right in the UI you'll see a list of repositories, click the `{z_gitea_web_ui_username}/playbooks-adv-controller` link. This will take you to the repository.
 
 === Clone the repository
 
 Next, you need the repository from Gitea in your home directory on the bastion host. As you have already cloned this repo in the first chapter it should already exist. To check, in your VS Code terminal run:
 
-[source,shell,subs="attributes"]
+[source,console,subs="attributes"]
 ----
-ls -l
+$ ls -l
 
 total 4
-drwxr-xr-x. 5 lab-user users 4096 Apr 24 13:10 playbooks-adv-controller
+drwxr-xr-x. 5 {z_ssh_user} users 4096 Apr 24 13:10 playbooks-adv-controller
 ----
 
 You have to configure Git locally, run:
@@ -51,7 +51,7 @@ We will create a GnuPG key pair to sign our project locally. Asynchronous keys a
 
 === Prepare GPG
 
-First we have to create the keys we'll use with GPG. Create the file `/home/{gitea_web_ui_username}/gpg.txt` using your favorite editor with the following content:
+First we have to create the keys we'll use with GPG. Create the file `/home/{z_gitea_web_ui_username}/gpg.txt` using your favorite editor with the following content:
 
 [source,properties,role=execute]
 ----
@@ -117,7 +117,7 @@ Now that we have prepared the signing keys let's sign our `playbooks-adv-control
 sudo dnf install ansible-sign -y
 ----
 
-The first step toward signing content is to create a file that tells `ansible-sign` which files to protect. This file should be called `MANIFEST.in` and reside in the project root directory. So go ahead and create the file `/home/{gitea_web_ui_username}/playbooks-adv-controller/MANIFEST.in` using your favorite editor with the following content:
+The first step toward signing content is to create a file that tells `ansible-sign` which files to protect. This file should be called `MANIFEST.in` and reside in the project root directory. So go ahead and create the file `/home/{z_gitea_web_ui_username}/playbooks-adv-controller/MANIFEST.in` using your favorite editor with the following content:
 
 [source,shell,role=execute,subs="attributes"]
 ----
@@ -133,7 +133,7 @@ The above command will create a new `MANIFEST.in` file in the `playbooks-adv-con
 
 [source,shell,role=execute,subs="attributes"]
 ----
-ansible-sign project gpg-sign /home/{bastion_ssh_user_name}/playbooks-adv-controller
+ansible-sign project gpg-sign /home/{z_bastion_ssh_user_name}/playbooks-adv-controller
 ----
 
 The above command tells the `ansible-sign` tool to gpg-sign the `playbooks-adv-controller` project locally.
@@ -142,7 +142,7 @@ Once you run the command, you will see that the GPG signing was successful and y
 
 [source,shell,role=execute,subs=attributes]
 ----
-head -n-0 /home/{bastion_ssh_user_name}/playbooks-adv-controller/.ansible-sign/sha256sum.*
+head -n-0 /home/{z_bastion_ssh_user_name}/playbooks-adv-controller/.ansible-sign/sha256sum.*
 ----
 
 `ansible-sign` created a file with the checksums of the files listed in `MANIFEST.in` and another file with the signature of this file.
@@ -174,7 +174,7 @@ Push the new files to your Git repository server:
 git push
 ----
 
-VS Code will open a _small_ dialog at the top of the window asking for username and password, enter `{gitea_web_ui_username}` and as password `{gitea_web_ui_password}`.
+VS Code will open a _small_ dialog at the top of the window asking for username and password, enter `{z_gitea_web_ui_username}` and as password `{z_gitea_web_ui_password}`.
 
 == Setup automation controller
 
@@ -207,8 +207,8 @@ To configure the Gitea repository as a Project we need an SCM credential. In the
 * **Name**: gitea
 * **Organization**: Default
 * **Credential Type**: Source Control
-* **Username**: {gitea_web_ui_username}
-* **Password**: {gitea_web_ui_password}
+* **Username**: {z_gitea_web_ui_username}
+* **Password**: {z_gitea_web_ui_password}
 * Click **Save**.
 
 Now, to create the Project, click on **Resources ⇒ Projects** on the left-hand side menu:
@@ -217,7 +217,7 @@ Now, to create the Project, click on **Resources ⇒ Projects** on the left-hand
 * **Name**: Signed Project
 * **Source Control Type**: Git
 * **Content Signature Validation Credential**: ansible-sign
-* **Source Control URL**: The clone URL of your Gitea repository, {gitea_web_ui_url}/{gitea_web_ui_username}/playbooks-adv-controller.git
+* **Source Control URL**: The clone URL of your Gitea repository, {z_gitea_web_ui_url}/{z_gitea_web_ui_username}/playbooks-adv-controller.git
 * **Source Control Credential**: gitea
 * Click **Save**
 
@@ -246,7 +246,7 @@ Above tasks indicate that the signature validation was successful.
 
 The last step in this lab is to check, if automation controller picks up if the content has been changed without re-signing it, indicating somebody has tampered with the content.
 
-Open the file `/home/{gitea_web_ui_username}/playbooks-adv-controller/apache_install.yml` in your VS Code and change something, like set `enabled: false`.
+Open the file `/home/{z_gitea_web_ui_username}/playbooks-adv-controller/apache_install.yml` in your VS Code and change something, like set `enabled: false`.
 
 Push the new version to the Git repository:
 
@@ -257,7 +257,7 @@ git commit -m "changing file"
 git push
 ----
 
-VS Code will again open a _small_ dialog at the top of the window asking for username and password, enter `{gitea_web_ui_username}` and as password `{gitea_web_ui_password}`.
+VS Code will again open a _small_ dialog at the top of the window asking for username and password, enter `{z_gitea_web_ui_username}` and as password `{z_gitea_web_ui_password}`.
 
 If this change was legit, you would have re-signed the repository content. This way automation controller should recognize the signature of the file is not valid anymore and fail the repository sync. Give it a try:
 

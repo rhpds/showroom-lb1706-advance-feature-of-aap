@@ -62,8 +62,8 @@ Create the user:
 ** **Last Name:** Shift
 ** **Email:** nightshift@example.com
 ** **Username:** nightshift
-** **Password:** {ansible_controller_admin_password}
-** **Confirm Password:** {ansible_controller_admin_password}
+** **Password:** {z_ansible_controller_admin_password}
+** **Confirm Password:** {z_ansible_controller_admin_password}
 ** **User Type:** Normal User
 ** **Organization:** Default
 - Click **Save**
@@ -108,7 +108,7 @@ If you go to **Resources** ⇒ **Templates**, open the `Deploy Webapplication` w
 == Test Restricted User
 
 You've now setup the required user and permissions.
-To test everything, log out of automation controller’s web UI and in again as the `nightshift` user with password **{ansible_controller_admin_password}**.
+To test everything, log out of automation controller’s web UI and in again as the `nightshift` user with password **{z_ansible_controller_admin_password}**.
 
 - Go to the **Templates** view, you should notice for **nightshift** only the **Deploy Webapplication** template is listed. The user is allowed to view and launch, but not to edit the Template. Just open the template and try to change it, there is not even an **Edit** button.
 - Run the Template by clicking the rocket icon. Enter the survey content to your liking and launch the job.
@@ -119,7 +119,7 @@ To test everything, log out of automation controller’s web UI and in again as 
 curl http://{node1_hostname}/nodejs
 ----
 
-- In the web UI, log out user **nightshift** and in again as **{ansible_controller_admin_username}**.
+- In the web UI, log out user **nightshift** and in again as **{z_ansible_controller_admin_username}**.
 
 Recall what you have just done:
 
