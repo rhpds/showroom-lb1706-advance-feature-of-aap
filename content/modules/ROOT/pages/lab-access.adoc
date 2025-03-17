@@ -9,7 +9,7 @@ For your convenience, this page contains access information to all systems in yo
 |===
 s| Role s| URL s| Username
 | VS Code | {vscode_web_ui_url}[window=_blank] | {gitea_web_ui_username}
-| Automation controller | {ansible_controller_web_ui_url}[window=_blank] | admin
+| Automation controller | {ansible_controller_web_ui_url}[window=_blank] | {ansible_controller_admin_username}
 | Gitea web UI | {gitea_web_ui_url}[window=_blank] | {gitea_web_ui_username}
 |===
 
