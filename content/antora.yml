@@ -5,23 +5,33 @@ nav:
   - modules/ROOT/nav.adoc
 
 asciidoc:
-  attributes:
-    lab_name: "Advanced features of automation controller"
-    release-version: master
+  attributes:  # keep in alphabetical order where meaningful
+    lab_name: "LB1706: advanced features of automation controller"
     page-pagination: true
-    vscode_web_ui_url: https://bastion.myguid.mysandbox.opentlc.com:8443
-    vscode_web_ui_password: mypassword
-    bastion_host_name: bastion.myguid.mysandbox.opentlc.com
-    bastion_ssh_user_name: lab-user
-    private_automation_hub_url: https://pah.myguid.mysandbox.opentlc.com
-    ansible_controller_web_ui_url: https://autoctl1.myguid.mysandbox.opentlc.com
-    ansible_controller_admin_password: mypassword
-    gitea_web_ui_url: https://bastion.myguid.mysandbox.opentlc.com:488
-    gitea_web_ui_username: lab-user
-    gitea_web_ui_password: mypassword
-    guid: myguid
+    release-version: master
+    # variables taken from rendered showroom (name could be more explicit)
+    nginx_web_url: aap.MYGUID.sandboxMYSANDBOX.opentlc.com
+    targethost: bastion.MYGUID.sandboxMYSANDBOX.opentlc.com
+    # variables which should come from the lab but don't yet
+    gitea_web_ui_port: 488
+    lab_password: MYPASSWORD
+    lab_username: MYUSER
+    vscode_web_ui_port: 8443
+    # variables added manually for LB1706/2025, could come from the lab
     node1_hostname: node1.example.com
     node2_hostname: node2.example.com
-    ssh_user: devops
-    ssh_password: devops
-    ssh_command: ssh devops@bastion.{guid}.example.opentlc.com
+    # variables from previous versions, recreated from the above ones
+    ansible_controller_admin_password: "{lab_password}"
+    ansible_controller_admin_username: "{lab_username}"
+    ansible_controller_web_ui_url: "https://{nginx_web_url}"
+    bastion_host_name: "{targethost}"
+    bastion_ssh_user_name: "{lab_username}"
+    gitea_web_ui_url: "https://{targethost}:{gitea_web_ui_port}"
+    gitea_web_ui_username: "{lab_username}"
+    gitea_web_ui_password: "{lab_password}"
+    private_automation_hub_url: "https://{nginx_web_url}"
+    ssh_user: "{lab_username}"
+    ssh_password: "{lab_password}"
+    ssh_command: "ssh {lab_username}@{targethost}"
+    vscode_web_ui_password: "{lab_password}"
+    vscode_web_ui_url: "https://{targethost}:{vscode_web_ui_port}"

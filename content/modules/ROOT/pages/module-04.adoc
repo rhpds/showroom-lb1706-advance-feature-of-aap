@@ -119,7 +119,7 @@ To test everything, log out of automation controller’s web UI and in again as 
 curl http://{node1_hostname}/nodejs
 ----
 
-- In the web UI, log out user **nightshift** and in again as **admin**.
+- In the web UI, log out user **nightshift** and in again as **{ansible_controller_admin_username}**.
 
 Recall what you have just done:
 
