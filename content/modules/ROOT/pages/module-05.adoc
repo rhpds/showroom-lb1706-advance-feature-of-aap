@@ -27,7 +27,7 @@ Use curl to query your "external inventory source":
 
 [source,shell,role=execute,subs="attributes"]
 ----
-curl {z_gitea_web_ui_url}/{z_gitea_web_ui_username}/playbooks-adv-controller/raw/branch/main/constructed-inventory/inventory_list
+curl {z_gitea_web_ui_url}/{z_gitea_web_ui_username}/{gitea_controller_project}/raw/branch/main/constructed-inventory/inventory_list
 ----
 
 This should give you the following output:
@@ -103,7 +103,7 @@ As looping over all hosts and calling the script with *`--host`* can be pretty s
 #!/bin/bash
 
 if [ "$1" == "--list" ] ; then
-    curl -sS {z_gitea_web_ui_url}/{z_gitea_web_ui_username}/playbooks-adv-controller/raw/branch/main/constructed-inventory/inventory_list
+    curl -sS {z_gitea_web_ui_url}/{z_gitea_web_ui_username}/{gitea_controller_project}/raw/branch/main/constructed-inventory/inventory_list
 elif [ "$1" == "--host" ]; then
     echo '{"_meta": {"hostvars": {}}}'
 else

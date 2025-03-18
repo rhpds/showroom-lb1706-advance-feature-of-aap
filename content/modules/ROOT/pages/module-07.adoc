@@ -20,7 +20,7 @@ Point your browser to
 
 Log in to Gitea as user `{z_gitea_web_ui_username}` with the password `{z_gitea_web_ui_password}`.
 
-Look around, to the right in the UI you'll see a list of repositories, click the `{z_gitea_web_ui_username}/playbooks-adv-controller` link. This will take you to the repository.
+Look around, to the right in the UI you'll see a list of repositories, click the `{z_gitea_web_ui_username}/{gitea_controller_project}` link. This will take you to the repository.
 
 === Clone the repository
 
@@ -31,14 +31,14 @@ Next, you need the repository from Gitea in your home directory on the bastion h
 $ ls -l
 
 total 4
-drwxr-xr-x. 5 {z_ssh_user} users 4096 Apr 24 13:10 playbooks-adv-controller
+drwxr-xr-x. 5 {z_ssh_user} users 4096 Apr 24 13:10 {gitea_controller_project}
 ----
 
 You have to configure Git locally, run:
 
 [source,shell,role=execute,subs="attributes"]
 ----
-cd ~/playbooks-adv-controller
+cd ~/{gitea_controller_project}
 git config --global user.name "Your Name"
 git config --global user.email you@example.com
 ----
@@ -110,14 +110,14 @@ gpg --list-keys
 
 === Configure ansible-sign and sign playbooks
 
-Now that we have prepared the signing keys let's sign our `playbooks-adv-controller` repository using the `ansible-sign` tool. First install the tool itself:
+Now that we have prepared the signing keys let's sign our `{gitea_controller_project}` repository using the `ansible-sign` tool. First install the tool itself:
 
 [source,shell,role=execute]
 ----
 sudo dnf install ansible-sign -y
 ----
 
-The first step toward signing content is to create a file that tells `ansible-sign` which files to protect. This file should be called `MANIFEST.in` and reside in the project root directory. So go ahead and create the file `/home/{z_gitea_web_ui_username}/playbooks-adv-controller/MANIFEST.in` using your favorite editor with the following content:
+The first step toward signing content is to create a file that tells `ansible-sign` which files to protect. This file should be called `MANIFEST.in` and reside in the project root directory. So go ahead and create the file `/home/{z_gitea_web_ui_username}/{gitea_controller_project}` using your favorite editor with the following content:
 
 [source,shell,role=execute,subs="attributes"]
 ----
@@ -129,20 +129,20 @@ exclude .gitignore
 include *.yml
 ----
 
-The above command will create a new `MANIFEST.in` file in the `playbooks-adv-controller` local repository. In this case we just include every file in the repository root that matches `*.yml` and exclude everything else. In the next step we will finally sign the files listed in the `MANIFEST.in` file.
+The above command will create a new `MANIFEST.in` file in the `{gitea_controller_project}` local repository. In this case we just include every file in the repository root that matches `*.yml` and exclude everything else. In the next step we will finally sign the files listed in the `MANIFEST.in` file.
 
 [source,shell,role=execute,subs="attributes"]
 ----
-ansible-sign project gpg-sign /home/{z_bastion_ssh_user_name}/playbooks-adv-controller
+ansible-sign project gpg-sign /home/{z_bastion_ssh_user_name}/{gitea_controller_project}
 ----
 
-The above command tells the `ansible-sign` tool to gpg-sign the `playbooks-adv-controller` project locally.
+The above command tells the `ansible-sign` tool to gpg-sign the `{gitea_controller_project}` project locally.
 
 Once you run the command, you will see that the GPG signing was successful and you can confirm that by looking at the new files that were createdby `ansible-sign`:
 
 [source,shell,role=execute,subs=attributes]
 ----
-head -n-0 /home/{z_bastion_ssh_user_name}/playbooks-adv-controller/.ansible-sign/sha256sum.*
+head -n-0 /home/{z_bastion_ssh_user_name}/{gitea_controller_project}/.ansible-sign/sha256sum.*
 ----
 
 `ansible-sign` created a file with the checksums of the files listed in `MANIFEST.in` and another file with the signature of this file.
@@ -155,7 +155,7 @@ To make the repository available as a Project to automation controller, the new 
 
 [source,shell,role=execute]
 ----
-cd ~/playbooks-adv-controller
+cd ~/{gitea_controller_project}
 git add .ansible-sign/ MANIFEST.in
 git status
 ----
@@ -217,7 +217,7 @@ Now, to create the Project, click on **Resources ⇒ Projects** on the left-hand
 * **Name**: Signed Project
 * **Source Control Type**: Git
 * **Content Signature Validation Credential**: ansible-sign
-* **Source Control URL**: The clone URL of your Gitea repository, {z_gitea_web_ui_url}/{z_gitea_web_ui_username}/playbooks-adv-controller.git
+* **Source Control URL**: The clone URL of your Gitea repository, {z_gitea_web_ui_url}/{z_gitea_web_ui_username}/{gitea_controller_project}.git
 * **Source Control Credential**: gitea
 * Click **Save**
 
@@ -246,7 +246,7 @@ Above tasks indicate that the signature validation was successful.
 
 The last step in this lab is to check, if automation controller picks up if the content has been changed without re-signing it, indicating somebody has tampered with the content.
 
-Open the file `/home/{z_gitea_web_ui_username}/playbooks-adv-controller/apache_install.yml` in your VS Code and change something, like set `enabled: false`.
+Open the file `/home/{z_gitea_web_ui_username}/{gitea_controller_project}/apache_install.yml` in your VS Code and change something, like set `enabled: false`.
 
 Push the new version to the Git repository:
 
