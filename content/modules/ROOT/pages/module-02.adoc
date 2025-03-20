@@ -1,9 +1,17 @@
-# Configure automation controller resources with Ansible
+# Configure resources with Ansible
 
-This is an advanced automation controller lab, so we don’t really want you to use the web UI for everything. To fully embrace automation and adopt the https://en.wikipedia.org/wiki/Infrastructure_as_code[infrastructure as code,window=_blank] methodology, **we want to use Ansible to configure our automation controller** cluster.
+This is an advanced lab, so we don’t really want you to use the web UI for everything.
+To fully embrace automation and adopt the https://en.wikipedia.org/wiki/Infrastructure_as_code[infrastructure as code,window=_blank] methodology, **we want to use Ansible to configure our automation platform**.
 
-Since automation controller is exposing all of its functionality via REST API, we can automate everything.
-Instead of using the API directly, it is highly recommended to use the https://github.com/ansible/awx/tree/devel/awx_collection[AWX,window=_blank] or https://cloud.redhat.com/ansible/automation-hub/repo/published/ansible/controller[automation controller,window=_blank] Ansible Collection (the second link will only work for you if you have an active Red Hat Ansible Automation Platform Subscription) to setup, configure and maintain your Red Hat Ansible Automation Platform automation controller using Ansible.
+Since the automation platform is exposing all of its functionality via REST API, we can automate everything.
+Instead of using the API directly, it is highly recommended to use the https://github.com/ansible/awx/tree/devel/awx_collection[AWX,window=_blank] or the Ansible Collections to setup, configure and maintain your Red Hat Ansible Automation Platform using Ansible.
+
+Before we jump into the details, let's have a quick overview of the currently available collections and how they rely on each other.
+
+- https://console.redhat.com/ansible/automation-hub/repo/published/ansible/controller/[ansible.controller] This Ansible collection allows for easy interaction with an Red Hat Ansible Automation Platform server via Ansible playbooks.
+- https://console.redhat.com/ansible/automation-hub/repo/published/ansible/eda/[ansible.eda] This collection contains event source plugins, event filters and example rulebooks to be used with ansible-rulebook.
+- https://console.redhat.com/ansible/automation-hub/repo/published/ansible/hub/[ansible.hub] This Ansible collection allows for easy interaction with an Ansible Automation Hub server via Ansible playbooks.
+- https://console.redhat.com/ansible/automation-hub/repo/published/ansible/platform/[ansible.platform] This collection contains modules that can be used to automate the creation of resources on an install of Ansible Automation Platform.
 
 == The Scenario
 
@@ -53,12 +61,12 @@ ansible-navigator:
         CONTROLLER_VERIFY_SSL: "True"
 ----
 
-The env variables prefixed with `CONTROLLER_` are the connection and credential parameters.
+The environment variables prefixed with `CONTROLLER_` are the connection and credential parameters.
 
 NOTE: For your convenience we added the authentication credentials for automation controller to the configuration, so you don't have to manually log in. In most real world scenarios you probably don't want to do this and will not store your password in a clear text configuration file.
 
-TIP: for performance and security reasons, it is recommended "in real life" to generate and use a token for your automation.
-Check the referenced documentation for details on how to do this.
+TIP: For performance and security reasons, it is recommended "in real life" to generate and use a token for your automation.
+Check the https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/using_content_navigator/[ansible-navigator] documentation for details on how to do this.
 
 == Create the Playbook
 
@@ -71,9 +79,11 @@ cd {gitea_controller_project}
 cat configure-controller.yml
 ----
 
+NOTE: You can find your login credentials on the xref:lab-access.adoc[Lab Access] page.
+
 Use `cat` or the VS Code editor to have a good look at what the `configure-controller.yml` Playbook is supposed to do.
 
-Since we are calling the REST API of automation controller, the Ansible playbook is run against **localhost**, but the modules will connect to the URL provided by the **CONTROLLER_HOST** environment variable set for you in `~/.ansible-navigator.yml`.
+Since we are calling the REST API of automation controller, the Ansible playbook is running against **localhost**, but the modules will connect to the URL provided by the **CONTROLLER_HOST** environment variable set for you in `~/.ansible-navigator.yml`.
 
 Tasks:
 
@@ -83,9 +93,7 @@ Tasks:
 +
 TIP: SSH keys have already been created and distributed in your lab environment and `sudo` has been setup on the managed hosts to allow password-less login. When you SSH into a host as a regular user from the bastion node you will become user **ec2-user** on the host you logged in.
 
-* **Lab Project**: A Project is created, the content used in this lab is hosted on GitLab in the project https://gitlab.com/ansible-labs-crew/playbooks-adv-controller[https://gitlab.com/ansible-labs-crew/playbooks-adv-controller,window=_blank].
-
-NOTE: SSH keys have already been created and distributed in your lab environment and `sudo` has been setup on the managed hosts to allow password-less login. When you SSH into a host as user a regular user from bastion node you will become user **ec2-user** on the host you logged in.
+* **Lab Project**: A Project is created, the content used in this lab is hosted on GitLab in the project https://gitlab.com/ansible-labs-crew/playbooks-adv-controller-2025[https://gitlab.com/ansible-labs-crew/playbooks-adv-controller-2025,window=_blank].
 
 === Run the Playbook
 
@@ -100,8 +108,10 @@ While in `ansible-navigator` press a line number e.g. to get more information ab
 To leave press `Esc` multiple times to get up again in the views and eventually out of Navigator (**but** wait until the playbook is marked as successful before you do that!).
 
 After the successful run, log into your {z_ansible_controller_web_ui_url}[automation controller web UI,window=_blank], using the user *{z_ansible_controller_admin_username}* and the usual password *{z_ansible_controller_admin_password}*.
-Make sure that you see the configured objects and a job "Source Control Update" to synchronize the Git project.
+Make sure that you see the configured objects and a job "Source Control Update" successfully executed which cloned the git repository.
 
-TIP: If you run this Ansible Playbook multiple times, you will notice the **ansible.controller.credential** module is not idempotent! Since automation controller stores the SSH key encrypted, the Ansible Module is unable to verify it has already been set and didn't change. This is what we want and expect from a secure system, but it also means Ansible has no means to verify it and hence overrides the SSH key or password every time the Ansible Playbook is executed.
+TIP: If you run this Ansible Playbook multiple times, you will notice the **ansible.controller.credential** module is not idempotent!
+Since automation controller stores the SSH key encrypted, the Ansible Module is unable to verify it has already been set and didn't change.
+This is what we want and expect from a secure system, but it also means Ansible has no means to verify it and hence overrides the SSH key or password every time the Ansible Playbook is executed.
 This can be overridden with the `update_secrets` parameter.
 Also note that the `credential_type` value is simply the type's name.

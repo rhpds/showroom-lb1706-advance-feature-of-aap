@@ -16,7 +16,7 @@ However, the new team member should not be allowed to change anything else in au
 
 In automation controller surveys allow to define the content of variables before running a job. The "Hello World!" our NodeJS application prints out, is actually defined in the dev https://gitlab.com/ansible-labs-crew/playbooks-dev/-/raw/master/install_node_app.yml[Playbook,window=_blank] in the variable `content`.
 
-TIP: If the automation controller UI is not open anymore, refer to the `Lab Access` page for the access details.
+TIP: If the automation controller UI is not open anymore, refer to the xref:lab-access.adoc[Lab Access] page for the access details.
 
 So we just need to add a survey to our **Deploy Webapplication** Workflow template. In the automation controller UI, open **Resources ⇒ Templates ⇒ Deploy Webapplication**, then:
 
