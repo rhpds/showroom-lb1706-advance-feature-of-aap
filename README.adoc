@@ -45,7 +45,7 @@ Live-reload is not supported.
 . Open http://localhost:8080 in your browser
 . Run ./utilities/lab-build to build your html
 
-To rebuild your html, run `./utilites/build`.
+To rebuild your html, run `./utilities/build`.
 
 == Editing Files
 
@@ -91,7 +91,7 @@ image::ui-links.png[]
 
 == Dev Mode
 
-As a convenience to developers, the Dev Mode Extention (disabled by default) displays the asciidoc attributes you have to work with while writing your lab instructions.
+As a convenience to developers, the Dev Mode Extension (disabled by default) displays the asciidoc attributes you have to work with while writing your lab instructions.
 
 . Disable/Enable Dev Mode by changing `enabled: true` or `enabled: false`
 +
