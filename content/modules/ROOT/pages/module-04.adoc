@@ -1,4 +1,4 @@
-# Use surveys and the revamped access rights to give your users self-service access
+= Use surveys and the revamped access rights to give your users self-service access
 
 Surveys allow us to build input dialogs and wizards to guide users through the process of providing the required data to run a job. There are different survey fields including drop down lists, password fields, or simple input boxes.
 
@@ -12,33 +12,40 @@ They would like to allow this new member:
 
 However, the new team member should not be allowed to change anything else in automation controller for now. Sounds like a job for automation controller **Surveys** and **Role Based Access Control**!
 
-== Add the Survey
+== Add the survey
 
-In automation controller surveys allow to define the content of variables before running a job. The "Hello World!" our NodeJS application prints out, is actually defined in the dev https://gitlab.com/ansible-labs-crew/playbooks-dev/-/raw/master/install_node_app.yml[Playbook,window=_blank] in the variable `content`.
+In automation controller surveys allow to define the content of variables before running a job. The "Hello World!" our NodeJS application prints out, is actually defined in the dev https://gitlab.com/ansible-labs-crew/playbooks-dev/-/raw/master/install_node_app.yml[install_node_app playbook,window=_blank] in the variable `content`.
 
 TIP: If the automation controller UI is not open anymore, refer to the xref:lab-access.adoc[Lab Access] page for the access details.
 
-So we just need to add a survey to our **Deploy Webapplication** Workflow template. In the automation controller UI, open **Resources ⇒ Templates ⇒ Deploy Webapplication**, then:
+So we just need to add a survey to our **Deploy Webapplication** Workflow template.
+In the AAP UI, open **Automation Execution ⇒ Templates ⇒ Deploy Webapplication**, then:
 
 - Go to the **Survey** tab
-- Click **Add** and fill in:
+- Click **Create survey question** and fill in:
 ** **Question:** Web Content
 ** **Answer variable name:** content
 ** **Answer type:** Text
-- Click **Save**
+- Click **Create survey question**
 
-To enable the survey, while still on the Survey tab switch the slider button from **Survey Disabled** to **Survey Enabled** (it turns from grey to blue).
+To enable the survey, while still on the Survey tab switch the slider button from **Survey disabled** to **Survey enabled** (it turns from grey to blue).
 
-== Test the Survey
+== Test the survey
 
-Launch the **Deploy Webapplication** Workflow Template by clicking the rocket icon on the **Resources ⇒ Templates** page.
+Launch the **Deploy Webapplication** Workflow Template by clicking on the **Launch template** button.
 
-Before the actual launch the survey will ask for **Web Content**. Fill in some text and click **Next**. The next window shows the launch details and at the bottom the values the survey has prompted for. If all is good run the Job by clicking **Launch**.
+NOTE: you may also click the rocket icon on the **Automation Execution ⇒ Templates** page.
 
-TIP: Note how the survey content is shown on the **Details** tab of the Job view as **Variables**.
+Before the actual launch the survey will ask for **Web Content**.
+Fill in some text of your invention and click **Next**.
+The Review window shows the launch details and at the bottom the text you have entered using the survey.
+If all is good, run the Job by clicking **Finish**.
+
+TIP: Note how the survey content is shown on the **Details** tab of the Job view in the **Extra variables** field.
 From an Ansible perspective they are actually nothing else than extra variables.
 
-After the job has completed, check the result. In your **VS Code** terminal, run again:
+After the job has completed, check the result.
+In your **VS Code** terminal, run again:
 
 [subs="attributes",source,bash,role=execute]
 ----
@@ -47,79 +54,127 @@ curl http://{node1_hostname}/nodejs
 
 The string returned should match what you entered in the survey.
 
-== Create a restricted User
+== Create a restricted user
 
-The second part of your task is to add the new Night Shift user who is only allowed to execute the **Deploy Webapplication** Workflow, but nothing else. For this you have to leverage the RBAC controls of automation controller.
+The second part of your task is to add the new Night Shift user who is only allowed to execute the **Deploy Webapplication** Workflow, but nothing else.
+For this you have to leverage the RBAC (Role Base Access Control) features of AAP.
+
+=== Create Role
+
+Since AAP 2.5, access management is handled in one central place across all services offered by AAP.
+Automation controller (or execution) is only one of those services.
+For this reason, we need to navigate down to the **Access Management** section of AAP.
+There you click on the **Roles** entry, and make sure you are in the **Automation Execution** tab.
+
+First filter on "Workflow".
+You can verify that no built-in role allows to execute _and_ approve a workflow, without being able to modify or delete them.
+To do so, click on the small arrow head next to the tick box on the left of each role to drop down the actual permissions.
+
+The Night Shift personal though is alone at night and they need to be able to circumvent approval steps or they might not be able to do their job.
+
+NOTE: for sake of simplicity and time, our workflow doesn't have an approval step.
+Feel free to add one between the two steps if you happen to have time left at the end of the session.
+This said, think about the fact that adding an approval step is adding a manual step in what should be an end-to-end automated workflow.
+
+So we decide to create our own role for them:
+
+* Click on the blue **Create role** button, and enter:
+** **Name:** WorkflowNightShifter
+** **Content type:** Workflow job template
+** **Permissions:** (select the following ones)
+*** [x] Approve workflow job template
+*** [x] Execute workflow job template
+*** [x] View workflow job template
+* Press the blue **Create role** button
+
+Again filtering on "Workflow", you can easily see that our new role is "Editable" and not "Built-in".
 
 === Create User
 
+// FIXME continue review
+
 Create the user:
 
-- In the automation controller web UI menu under **Access** ⇒ **Users**
-- Click the **Add** button
+- In the AAP web UI menu under **Access Management ⇒ Users**
+- Click the **Create user** button
 - Fill in the values for the new user:
-** **First Name:** Night
-** **Last Name:** Shift
-** **Email:** nightshift@example.com
 ** **Username:** nightshift
 ** **Password:** {z_ansible_controller_admin_password}
 ** **Confirm Password:** {z_ansible_controller_admin_password}
-** **User Type:** Normal User
+** **First Name:** Night
+** **Last Name:** Shift
+** **Email:** nightshift@example.com
+** **User Type:** (make sure everything is unchecked for a normal user)
 ** **Organization:** Default
-- Click **Save**
+- Click **Create user**
 
 === Create Team
 
-A Team is a subdivision of an organization with associated users, projects, credentials, and permissions. Teams provide a means to implement role based access control schemes and delegate responsibilities across organizations. For instance, permissions may be granted to a whole Team rather than each user on the Team.
+A Team is a subdivision of an organization with associated users, projects, credentials, and permissions.
+Teams provide a means to implement role based access control schemes and delegate responsibilities across organizations.
+For instance, permissions may be granted to a whole Team rather than each user on the Team.
 
 Create a Team:
 
-- Go to **Access ⇒ Teams**.
-- Click the blue Add button and create a team named `Execute only`.
-- Click **Save**
+- Go to **Access Management ⇒ Teams**.
+- Click the blue **Create team** button
+- Fill the values for the new team:
+** **Name:** NightShifters
+** **Organization:** Default
+- Click **Create team**
 
 Now you can add the new user to the team:
 
-- Return to **Access ⇒ Users** and click the `nightshift` user.
-- Jump to the **Teams** tab of user `nightshift`.
-- Click the **Associate** button and check the **Execute only** Team.
-- Click **Save**
+- Switch to the **Users** tab (staying in the `NightShifters` team view)
+- Click the **Add users** button
+- Select the `nightshift` user
+- Click **Add users**
 
-User `nightshift` is now a member of the **Execute only** Team.
+User `nightshift` is now a member of the `NightShifters` Team.
+
+TIP: you could have reached the same objective by using the **Teams** tab of the user's view.
 
 === Grant Permissions
 
-To allow users or teams to actually do anything, you have to set permissions. The members of the Team **Execute only** should only be allowed to modify the NodeJS content.
+To allow users or teams to actually do anything, you have to set permissions. The members of the Team `NightShifters` should only be allowed to modify the NodeJS content.
 
 Add the permission to use the template:
 
-- Open the Team **Execute only** under **Access ⇒ Teams**
-- Go to the **Roles** tab and click the blue Add button.
-- A new window opens. You can choose to set permissions for a number of resources.
-** Select the resource type **Workflow job templates**
+- Open the Team `NightShifters` under **Access Management ⇒ Teams**
+- Go to the **Roles** tab
+- Click the blue **Add roles** button
+- A new dialog opens.
+  You can choose to set permissions for a number of resources:
+** **Select a resource type:** Workflow job templates
 ** Click **Next**
 ** Choose the `Deploy Webapplication` Template by checking the box next to it.
 ** Click **Next**
-** Choose the role **Execute**
-- Click **Save**
+** Choose the role `WorkflowNightShifter`
+- Click **Next**, review and **Finish**
+- A short progress dialog appears, click **Close**
 
-If you go to **Resources** ⇒ **Templates**, open the `Deploy Webapplication` workflow, and go to the **Access** tab, you'll see an overview of all RBAC entries.
+If you go to **Automation Execution ⇒ Templates**, open the `Deploy Webapplication` workflow, and go to the **Team Access** tab, you'll see an overview of all RBAC entries.
 
-== Test Restricted User
+== Test the restricted user
 
 You've now setup the required user and permissions.
-To test everything, log out of automation controller’s web UI and in again as the `nightshift` user with password **{z_ansible_controller_admin_password}**.
+To test everything, log out of AAP’s web UI and in again as the `nightshift` user with password **{z_ansible_controller_admin_password}**.
 
-- Go to the **Templates** view, you should notice for **nightshift** only the **Deploy Webapplication** template is listed. The user is allowed to view and launch, but not to edit the Template. Just open the template and try to change it, there is not even an **Edit** button.
-- Run the Template by clicking the rocket icon. Enter the survey content to your liking and launch the job.
-- Once the job is finished, check the result by executing once again in the **VS Code** terminal:
+- Go to the **Automation Execution ⇒ Templates** view, you should notice that for `nightshift` only the `Deploy Webapplication` template is visible.
+ The user is allowed to view and launch, and approve, but not to edit the Template.
+ Just open the template and try to change it, there is not even an **Edit** button.
+- Run the Template by clicking the rocket icon.
+  Enter the survey content to your liking and launch the job.
+- Once the job is finished, check the result by executing once again in the terminal:
 
 [subs="attributes",source,bash,role=execute]
 ----
 curl http://{node1_hostname}/nodejs
 ----
 
-- In the web UI, log out user **nightshift** and in again as **{z_ansible_controller_admin_username}**.
+- In the web UI, log out user `nightshift` and in again as `{z_ansible_controller_admin_username}`.
+
+== Conclusion
 
 Recall what you have just done:
 
