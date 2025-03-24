@@ -33,7 +33,7 @@ When there is a new NodeJS-based website to deploy, two main steps need to happe
 
 When you run the Playbook during the xref:module-01.adoc[Configure Controller with Ansible] chapter some resources you need here were already setup:
 
-- Two Git repositories were setup as Projects `Weeder Git Repo` and `Webops Git Repo`
+- Two Git repositories were setup as Projects `Webdev Git Repo` and `Webops Git Repo`
 - Playbooks were configured as Job Templates `Web App Deploy` and `Web Infra Deploy`
 
 TIP: If you want to know what the Playbooks look like, check out the Gitlab URL in the Projects.
@@ -44,21 +44,24 @@ In your browser open {z_ansible_controller_web_ui_url}[window=_blank] and login 
 
 == Configure the Workflow
 
-Now, you set up the Workflow to bring together the work of the two teams. In automation controller go to the **Templates** resource and click the blue **Add** button. Choose **Add workflow template** and fill in as follows:
+Now, you set up the Workflow to bring together the work of the two teams.
+In the Automation Execution section, go to the **Templates** resource and click the blue **Create template** button.
+Choose **Create workflow job template** and fill in as follows:
 
 - **Name:** Deploy Webapplication
 - **Organization:** Default
-- Click **Save** at the bottom
+- Click **Create workflow job template** at the bottom
 
 After saving the template the **Workflow Visualizer** opens to allow you to build a workflow. You can later open the **Workflow Visualizer** again by using the button labeled **Visualizer** on the template details page.
 
-- Click on the **Start** button, a dialog to configure a new **workflow node** opens.
+- Click on the **Add step** button, a dialog to configure a new **workflow node** opens.
 - First, select the node type **Job Template**
 - Choose the **Web Infra Deploy** Template
-- Click **Save**
+- Click **Next** then **Finish**
 
 You get into the **Workflow Visualizer** overview showing the first workflow node.
 
+// FIXME: we need to fix the screenshot and the explanations
 - The node gets annotated with the name of the job.
 - Hover the mouse pointer over the node, you’ll see a number of options appearing:
 image:workflow-node-edit.png[width="80",height="200",float="right"]
@@ -67,20 +70,20 @@ image:workflow-node-edit.png[width="80",height="200",float="right"]
 ** a **pencil** icon to edit this node's settings
 ** a **link** icon to link to another node
 ** and a **delete** icon.
-- We want to add another workflow node, so click the **+** sign
-- You could now set the condition under which the next node is executed, select **On Success**
-- Click **Next**
+- We want to add another workflow node, so click the **Add step and link** sign
+- Choose **Web App Deploy** as the next Job Template.
+- The **Status** field sets the condition under which the next node is executed, select **Run on success**
 +
-TIP: The type allows for more complex workflows. You could lay out different execution paths for successful and for failed Playbook runs.
+TIP: The Status field allows for more complex workflows. You could lay out different execution paths for successful and for failed Playbook runs.
 
-- Choose **Web App Deploy** as the next Job.
-- Click **Save**
+- Click **Next** then **Finish**
 
 Your workflow should look like this:
 
-image:webapplication-workflow.png[]
+// FIXME: we need a new screenshot for this one
+image::webapplication-workflow.png[Workflow deploying Web Infra and App]
 
-- Back in the main **Workflow Visualizer** view click **Save** in the upper right to save the Workflow Template.
+- Back in the main **Workflow Visualizer** view click **Save** in the upper left to save the Workflow Template.
 
 == And Action!
 
