@@ -43,13 +43,36 @@ TIP: Commands you are supposed to run can be shown with or without the expected 
 
 TIP: The command line can wrap on the HTML page from time to time. Therefore the output might be separated from the command line for better readability by an empty line.
 
+== Finding your way in the lab
+
+If you're reading these lines, you should see a WebUI looking like the following screenshot.
+We call this user interface "Showroom" so don't wonder if you see this name here and there.
+
+.Showroom navigation overview
+image::showroom.drawio.png[Showroom navigation overview]
+
+The lab instructions are made of sections, or exercises, which you should do in order, not forgetting steps as they might be relevant to following exercises.
+
+You can jump back to a specific section using the list in the top left corner.
+Each section has a title and a table of content, followed by instructions, on the left side.
+
+On the right side, there are different tabs each offering a different access to your environment, described in more details in the next chapter.
+You may use the resizing handle in the middle to give more space to the environment or to the instructions.
+
+TIP: if you don't see the right hand tabs in your environment, don't worry, you can also access the environment directly, as explained in the next chapter.
+
 == Accessing your Lab Environment
+
+As hinted in the previous chapter, you can access most elements of the environment through the showroom tabs.
+In doubt, check the xref:lab-access.adoc[Lab Access] section.
+
+The following chapters explain in more details how to access the command line.
 
 === Using VS Code
 
 Your main point of contact with the lab is **VS Code Server**, providing a VS Code-experience in your browser. You'll use VS Code to open terminals and to edit files (either in the build-in GUI editor or just using your favorite editor on the command line). 
 
-Now, open **VS Code** by clicking on the URL {z_vscode_web_ui_url}[window=_blank].
+Now, open **VS Code** by clicking on the URL {z_vscode_web_ui_url}[window=_blank], or click on the "Codeserver" tab (which should be the default).
 
 You should be greeted with a login screen:
 
@@ -75,6 +98,8 @@ The password is still the same: {z_ansible_controller_admin_password}
 TIP: The user to access the terminal is `{z_ssh_user}`, but your bastion node is setup to let you become `root` using _sudo_ without a password.
 
 TIP: All access information has been summarized for your convenience under xref:lab-access.adoc[Lab Access], accessible in the navigation menu to the right.
+
+The "Terminal" tab gives you the same impression as SSH without the need to login, you're directly on the bastion host.
 
 == Lab Configuration
 

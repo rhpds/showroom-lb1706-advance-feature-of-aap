@@ -5,12 +5,12 @@ For your convenience, this page contains access information to all systems in yo
 [#consoles]
 == Graphical Consoles
 
-[cols="1,3,1"]
+[cols="1,3,1,1"]
 |===
-s| Role s| URL s| Username
-| VS Code | {z_vscode_web_ui_url}[window=_blank] | {z_gitea_web_ui_username}
-| Automation controller | {z_ansible_controller_web_ui_url}[window=_blank] | {z_ansible_controller_admin_username}
-| Gitea web UI | {z_gitea_web_ui_url}[window=_blank] | {z_gitea_web_ui_username}
+s| Role s| URL s| Tab s| Username
+| VS Code | {z_vscode_web_ui_url}[window=_blank] | Codeserver | {z_gitea_web_ui_username}
+| Automation controller | {z_ansible_controller_web_ui_url}[window=_blank] | AAP | {z_ansible_controller_admin_username}
+| Gitea web UI | {z_gitea_web_ui_url}[window=_blank] | n/a | {z_gitea_web_ui_username}
 |===
 
 The password for all systems is: **{z_ansible_controller_admin_password}**
@@ -34,3 +34,4 @@ s|SSH Username s|SSH Password s| SSH Host
 ssh {z_gitea_web_ui_username}@{z_bastion_host_name}
 ----
 
+TIP: the Showroom tab named "Terminal" gives you a similar look & feel as would SSH, without the need to login.

@@ -1,7 +1,7 @@
 ---
 site:
-  title: Showroom Template Demo
-  url: https://redhat-scholars.github.io/course-template
+  title: LB1706 - Advanced automation controller
+  url: https://github.com/rhpds/showroom-lb1706-advance-feature-of-aap
   start_page: modules::index.adoc
 
 content:
