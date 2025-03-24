@@ -105,7 +105,10 @@ ansible-navigator run configure-controller.yml
 ----
 
 While in `ansible-navigator` press a line number e.g. to get more information about a play or tasks. Note: this works only for less then 10 lines, if you have more, you need to press `:` first.
-To leave press `Esc` multiple times to get up again in the views and eventually out of Navigator (**but** wait until the playbook is marked as successful before you do that!).
+To leave press `Esc` multiple times to get up again in the views and eventually out of Navigator.
+
+IMPORTANT: do **not** leave the Navigator TUI (Text User Interface) before the job is finished!
+Check the colored text box in the bottom-right corner, it must go from [.green-background]#Running# to [.green-background]#Successful#.
 
 After the successful run, log into your {z_ansible_controller_web_ui_url}[automation controller web UI,window=_blank], using the user *{z_ansible_controller_admin_username}* and the usual password *{z_ansible_controller_admin_password}*.
 Make sure that you see the configured objects and a job "Source Control Update" successfully executed which cloned the git repository.
