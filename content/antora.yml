@@ -20,7 +20,7 @@ asciidoc:
     # variables added manually for LB1706/2025, could come from the lab
     node1_hostname: node1.example.com
     node2_hostname: node2.example.com
-    gitea_controller_project: project-automation-controller
+    gitea_controller_project: playbooks-adv-controller
     # variables from previous versions, recreated from the above ones
     # name starts with z_ to sort after the variables they depend on
     z_ansible_controller_admin_password: "{lab_password}"
