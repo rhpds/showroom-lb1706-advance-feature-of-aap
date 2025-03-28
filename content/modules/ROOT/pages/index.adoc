@@ -145,7 +145,7 @@ Note the following parameters within the `execution-environment` section:
 
 For a full listing of every configurable knob checkout the link:https://ansible.readthedocs.io/projects/navigator/settings/[settings documentation,window=_blank].
 
-NOTE: For your convenience we added the authentication credentials for Automation Execution to the configuration, so you don't have to manually log in. In most real world scenarios you probably don't want to do this and will not store your password in a clear text configuration file
+NOTE: For your convenience we added the authentication credentials for Ansible Automation Platform to the configuration, so you don't have to manually log in. In most real world scenarios you probably don't want to do this and will not store your password in a clear text configuration file
 
 Run the `ansible-navigator` command with the `images` argument to look at execution environments configured on the control node:
 
