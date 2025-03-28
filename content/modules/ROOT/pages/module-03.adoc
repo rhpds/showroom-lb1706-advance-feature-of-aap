@@ -38,7 +38,7 @@ When you run the Playbook during the xref:module-01.adoc[Configure Ansible Autom
 
 TIP: If you want to know what the Playbooks look like, check out the Gitlab URL in the Projects.
 
-== Access the Automation Execution in UI
+== Access the Automation Execution UI
 
 In your browser open {z_ansible_controller_web_ui_url}[window=_blank] and login as user `{z_ansible_controller_admin_username}` with the password `{z_ansible_controller_admin_password}`.
 
