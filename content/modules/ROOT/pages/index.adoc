@@ -4,17 +4,20 @@
 
 Already know the basics of Red Hat Ansible Automation Platform and want more?
 
-In this hands-on lab, we'll introduce you to some advanced capabilities of automation controller so can benefit even more from using Ansible Automation Platform (often abbreviated as AAP).
+Note: In Ansible Automation Platform 2.5, Automation Controller is now accessible through the Automation Execution interface in the new UI, providing the same capabilities.
+If you're familiar with previous versions of AAP, note that from now on, we will refer to Automation Controller as Automation Execution to align with the latest terminology.
+
+In this hands-on lab, we'll introduce you to some advanced capabilities of Automation Execution so can benefit even more from using Ansible Automation Platform (often abbreviated as AAP).
 You'll learn how to:
 
-* Configure automation controller resources with Ansible 
-* Employ controller workflows so teams can collaborate more efficiently.
+* Configure Automation Execution resources with Ansible 
+* Employ Automation Execution workflows so teams can collaborate more efficiently.
 * Use surveys and the revamped RBAC system to give your users self-service access.
 * Use dynamic inventories to scale your automation.
 * Get more flexibility with the constructed inventory feature.
-* Secure the automation supply chain with content signing that ensures only approved content runs in automation controller.
+* Secure the automation supply chain with content signing that ensures only approved content runs in Automation Execution.
 
-NOTE: This lab is suitable for anybody with basic Ansible Automation Platform experience.
+NOTE: This lab is ideal for anyone with basic Ansible Automation Platform experience looking to expand their automation skills.
 
 
 == Lab Infrastructure
@@ -142,7 +145,7 @@ Note the following parameters within the `execution-environment` section:
 
 For a full listing of every configurable knob checkout the link:https://ansible.readthedocs.io/projects/navigator/settings/[settings documentation,window=_blank].
 
-NOTE: For your convenience we added the authentication credentials for automation controller to the configuration, so you don't have to manually log in. In most real world scenarios you probably don't want to do this and will not store your password in a clear text configuration file
+NOTE: For your convenience, we have pre-configured the authentication credentials for Ansible Automation Platform, so you won’t need to log in manually. However, in real-world scenarios, it's best to avoid this practice, as storing passwords in a plaintext configuration file can pose security risks.
 
 Run the `ansible-navigator` command with the `images` argument to look at execution environments configured on the control node:
 
