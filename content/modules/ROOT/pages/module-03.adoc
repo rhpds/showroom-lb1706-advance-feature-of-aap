@@ -1,6 +1,6 @@
 # Employ controller workflows so teams can collaborate more efficiently
 
-The basic idea of an automation controller workflow is to link multiple Job Templates together. They may or may not share inventory, Playbooks, or even permissions. The links can be conditional, e.g.:
+The basic idea of a workflow in Ansible Automation Platform is to link multiple Job Templates together. They may or may not share inventory, Playbooks, or even permissions. The links can be conditional, e.g.:
 
 - If job template A succeeds, job template B is automatically executed afterwards.
 - In case of a failure, job template C will be run.
@@ -31,14 +31,14 @@ When there is a new NodeJS-based website to deploy, two main steps need to happe
 - Deploy the most recent version of the JavaScript web application.
 - Make sure everything is prepared to run the application like the directory structure and service restarts.
 
-When you run the Playbook during the xref:module-01.adoc[Configure Controller with Ansible] chapter some resources you need here were already setup:
+When you run the Playbook during the xref:module-01.adoc[Configure Ansible Automation Platform with Ansible] chapter some resources you need here were already setup:
 
 - Two Git repositories were setup as Projects `Webdev Git Repo` and `Webops Git Repo`
 - Playbooks were configured as Job Templates `Web App Deploy` and `Web Infra Deploy`
 
 TIP: If you want to know what the Playbooks look like, check out the Gitlab URL in the Projects.
 
-== Access the automation controller UI
+== Access the Automation Execution in UI
 
 In your browser open {z_ansible_controller_web_ui_url}[window=_blank] and login as user `{z_ansible_controller_admin_username}` with the password `{z_ansible_controller_admin_password}`.
 
