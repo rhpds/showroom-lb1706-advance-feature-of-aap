@@ -1,1 +1,46 @@
 # Introduction to Unified UI
+
+With Ansible Automation Platform 2.5 we have introduced a new, unified Web UI. It provides consistent access to the components of AAP in one interface. 
+
+To access the UI, click on the URL {z_ansible_controller_web_ui_url}[window=_blank] to open it in a new browser tab, or in Showroom click on the "Codeserver" tab. Both will take you to the AAP login page:
+
+image::aap-login.png[500,300]
+
+Login as user **lab-user** with the password **{z_ansible_controller_admin_password}**. This will open the shiny new UI, let's have a look around.
+
+TIP: Depending on the width of your browser window the main menu to the left might be hidden. Just click the "Hamburger-style" button in the upper left and it will fold out. Or just resize your browser... ;-)
+
+The menu lists the main components of AAP, most entries will open sub-menus when clicked, like the **Automation Execution** in this example:
+
+image::aap-ui-menu.png[800,600]
+
+When you access the UI, you will start on the **Overview** page which provides information about what's going on in your AAP in a handy dashboard. Right now your environment hsn't done anything so this will be pretty empty. But we'll of course change this during the course of this lab.
+
+But there is more, if you scroll down, you'll find a section called **Quick Starts**. These are interactive guides to get you started quickly with key Ansible Automation Platform features. This will help introduce new users to Ansible Automation Platform.
+
+image::quickstarts.png[800,600]
+
+Now let's briefly go through the other menu items:
+
+* **Automation Execution**: This was formerly named Automation Controller, it is the main control center of your automation.
+
+* **Automation Decisions** is the UI component of the AAP Event Driven Automation (EDA) functionality.
+
+* **Automation Content** unifies the Private Automation Hub into the UI.
+
+* **Automation Analytics** provides access to the Automation Calculator, Host Metrics and the usage of the AAP subscriptions.
+
+* **Access Management** holds the management of the RBAC system to control access to AAP.
+
+* **Ansible Lightspeed** is providing a link to get started with generative AI for AAP users.
+
+* And finally **Settings** for configuring AAP.
+
+The new UI is not only eye-candy, the main change is hidden: All traffic to the UI components now goes through a single entry point called **Platform Gateway**. It handles authentication and authorization for the Ansible Automation Platform and serves the platform user interface.
+
+Now that you know your way around, go ahead and proceed to the next chapter!
+
+
+
+
+
