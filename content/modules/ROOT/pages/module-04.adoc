@@ -1,22 +1,26 @@
 = Use surveys and the revamped access rights to give your users self-service access
 
-Surveys allow us to build input dialogs and wizards to guide users through the process of providing the required data to run a job. There are different survey fields including drop down lists, password fields, or simple input boxes.
+Surveys allow us to build input dialogs and wizards to guide users through the process of providing the required data to run a job.
+There are different survey fields including drop down lists, password fields, or simple input boxes.
 
 == The Scenario
 
-The App and Ops teams are quite happy with how you setup the workflow to combine both teams' Ansible content into one automation job. But something else came up, as the app team has a new Night Shift member.
+The App and Ops teams are quite happy with how you setup the workflow to combine both teams' Ansible content into one automation job.
+But something else came up, as the app team has a new Night Shift member.
 They would like to allow this new member:
 
 - Changing the content of the web site NodeJS is serving
 - Running the webapp deployment job.
 
-However, the new team member should not be allowed to change anything else in automation controller for now. Sounds like a job for automation controller **Surveys** and **Role Based Access Control**!
+However, the new team member should not be allowed to change anything else in AAP for now.
+Sounds like a job for Automation Execution **Surveys** and AAP **Role Based Access Control**!
 
 == Add the survey
 
-In automation controller surveys allow to define the content of variables before running a job. The "Hello World!" our NodeJS application prints out, is actually defined in the dev https://gitlab.com/ansible-labs-crew/playbooks-dev/-/raw/master/install_node_app.yml[install_node_app playbook,window=_blank] in the variable `content`.
+Surveys allow to define the content of variables before running a job.
+The "Hello World!" our NodeJS application prints out, is actually defined in the dev https://gitlab.com/ansible-labs-crew/playbooks-dev/-/raw/master/install_node_app.yml[install_node_app playbook,window=_blank] in the variable `content`.
 
-TIP: If the automation controller UI is not open anymore, refer to the xref:lab-access.adoc[Lab Access] page for the access details.
+TIP: If the AAP UI is not open anymore, refer to the xref:lab-access.adoc[Lab Access] page for the access details.
 
 So we just need to add a survey to our **Deploy Webapplication** Workflow template.
 In the AAP UI, open **Automation Execution ⇒ Templates ⇒ Deploy Webapplication**, then:
@@ -62,7 +66,7 @@ For this you have to leverage the RBAC (Role Base Access Control) features of AA
 === Create Role
 
 Since AAP 2.5, access management is handled in one central place across all services offered by AAP.
-Automation controller (or execution) is only one of those services.
+Automation controller (respectively Execution) is only one of those services.
 For this reason, we need to navigate down to the **Access Management** section of AAP.
 There you click on the **Roles** entry, and make sure you are in the **Automation Execution** tab.
 
