@@ -11,7 +11,7 @@ In this hands-on lab, we'll introduce you to some advanced capabilities of autom
 You'll learn how to:
 
 * Configure automation execution resources with Ansible
-* Employ Automation execution workflows so teams can collaborate more efficiently.
+* Employ automation execution workflows so teams can collaborate more efficiently.
 * Use surveys and the revamped RBAC system to give your users self-service access.
 * Use dynamic inventories to scale your automation.
 * Get more flexibility with the constructed inventory feature.
