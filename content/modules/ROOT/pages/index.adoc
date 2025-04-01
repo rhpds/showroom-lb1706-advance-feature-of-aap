@@ -4,18 +4,18 @@
 
 Already know the basics of Red Hat Ansible Automation Platform and want more?
 
-Note: In Ansible Automation Platform 2.5, Automation Controller is now accessible through the Automation Execution interface in the new UI, providing the same capabilities.
-If you're familiar with previous versions of AAP, note that from now on, we will refer to Automation Controller as Automation Execution to align with the latest terminology.
+Note: In Ansible Automation Platform 2.5, Automation Controller is now accessible through the automation execution interface in the new UI, providing the same capabilities.
+If you're familiar with previous versions of AAP, note that from now on, we will refer to Automation Controller as automation execution to align with the latest terminology.
 
-In this hands-on lab, we'll introduce you to some advanced capabilities of Automation Execution so can benefit even more from using Ansible Automation Platform (often abbreviated as AAP).
+In this hands-on lab, we'll introduce you to some advanced capabilities of automation execution so can benefit even more from using Ansible Automation Platform (often abbreviated as AAP).
 You'll learn how to:
 
-* Configure Automation Execution resources with Ansible 
-* Employ Automation Execution workflows so teams can collaborate more efficiently.
+* Configure automation execution resources with Ansible
+* Employ Automation execution workflows so teams can collaborate more efficiently.
 * Use surveys and the revamped RBAC system to give your users self-service access.
 * Use dynamic inventories to scale your automation.
 * Get more flexibility with the constructed inventory feature.
-* Secure the automation supply chain with content signing that ensures only approved content runs in Automation Execution.
+* Secure the automation supply chain with content signing that ensures only approved content runs in automation execution.
 
 NOTE: This lab is ideal for anyone with basic Ansible Automation Platform experience looking to expand their automation skills.
 
@@ -73,7 +73,7 @@ The following chapters explain in more details how to access the command line.
 
 === Using VS Code
 
-Your main point of contact with the lab is **VS Code Server**, providing a VS Code-experience in your browser. You'll use VS Code to open terminals and to edit files (either in the build-in GUI editor or just using your favorite editor on the command line). 
+Your main point of contact with the lab is **VS Code Server**, providing a VS Code-experience in your browser. You'll use VS Code to open terminals and to edit files (either in the build-in GUI editor or just using your favorite editor on the command line).
 
 Now, open **VS Code** by clicking on the URL {z_vscode_web_ui_url}[window=_blank], or click on the "Codeserver" tab (which should be the default).
 

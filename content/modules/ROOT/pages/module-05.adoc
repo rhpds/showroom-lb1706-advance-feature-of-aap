@@ -1,12 +1,12 @@
 # Use dynamic inventories to scale your automation.
 
-In Ansible and automation controller, as you know, everything starts with an inventory. There are several methods how inventories can be created. Starting from simple static definitions over importing inventory files to dynamic and smart inventories.
+In Ansible and the Ansible Automation Platform, as you know, everything starts with an inventory. There are several methods how inventories can be created. Starting from simple static definitions over importing inventory files to dynamic and smart inventories.
 
-In real life it’s very common to deal with external dynamic inventory sources (think cloud, CMDB, containers, ...). In this chapter we’ll introduce you to building dynamic inventories using custom inventory scripts. Another great feature of the automation controller to deal with inventories is the Constructed Inventory feature, which you’ll do a lab on as well.
+In real life it’s very common to deal with external dynamic inventory sources (think cloud, CMDB, containers, ...). In this chapter we’ll introduce you to building dynamic inventories using custom inventory scripts. Another great feature of the Ansible Automation Platform to deal with inventories is the Constructed Inventory feature, which you’ll do a lab on as well.
 
 == Dynamic Inventories
 
-Automation controller includes built-in support for syncing dynamic inventories from cloud sources such as Amazon AWS, Google Compute Engine, and others.
+Automation execution includes built-in support for syncing dynamic inventories from cloud sources such as Amazon AWS, Google Compute Engine, and others.
 
 * Inventory plugins are the newer way to generate custom inventories and must be written in Python, but inventory scripts still work.
 * If the source you want to query is not covered by an existing inventory plugin, you can create your own script or plugin.
@@ -16,7 +16,7 @@ Among all the available programming languages we have chosen one of the most acc
 
 IMPORTANT: Don’t get this wrong... we’ve chosen to use Bash to make it as simple as possible to show the concepts behind dynamic and custom inventories.
 Our recommendation in real life remains to use Python to write your dynamic inventory _plugins_ (not scripts!), and profit from libraries, documentation and examples written in the same language.
-And actually you should even place the inventory plugin in a collection and use it as part of this collection added to an Execution Environment loaded into the controller.
+And actually you should even place the inventory plugin in a collection and use it as part of this collection added to an Execution Environment loaded into the automation execution.
 But this approach would have been too involved for this lab, so here you are: Bash!
 
 === The Inventory Source
@@ -90,7 +90,7 @@ This should give you the following output:
 
 Well, this is handy, the output is already presented as JSON, as expected by Ansible... ;-)
 
-NOTE: Okay, seriously, in real life your plugin would likely get some information from your source system, format it as JSON and return the data to the automation controller.
+NOTE: Okay, seriously, in real life your plugin would likely get some information from your source system, format it as JSON and return the data to the automation execution.
 
 ==== The Custom Inventory Script
 
@@ -113,7 +113,7 @@ fi
 
 What it basically does is to return the data collected by curl when called with *`--list`* and as the data includes *`_meta`* information about the host variables Ansible will not call it again with *`--host`*. The curl command is of course the place where your plugin would get data by whatever means, format it as proper JSON and return it (`-sS` makes curl silent, except for error messages).
 
-But before we integrate the custom inventory plugin into our automation controller, it’s a good idea to test it on the command line:
+But before we integrate the custom inventory plugin into our automation execution, it’s a good idea to test it on the command line:
 
 * Bring up your VS Code browser tab, refer to the xref:lab-access.adoc[Lab Access] page if the tab was closed.
 * In either the visual editor or in the terminal using your favorite command line editor, create the file `/home/{z_bastion_ssh_user_name}/dyninv.sh` with the content of the Bash script shown above.
@@ -138,11 +138,11 @@ This should give you the same output as above.
 
 As simple as it gets, right? More information can be found on https://docs.ansible.com/ansible/latest/dev_guide/developing_inventory.html[how to develop dynamic inventories,window=_blank].
 
-So, now you have a source of a (slightly static) dynamic inventory (talk about an oxymoron…) and a script to fetch and pass it to the automation controller.
+So, now you have a source of a (slightly static) dynamic inventory (talk about an oxymoron…) and a script to fetch and pass it to the automation execution.
 
-=== Integrate into automation controller
+=== Integrate into Ansible Automation Platform
 
-In Ansible Tower up to version 3.8, you could create inventory scripts directly in the web UI. Since automation controller 4.0 the only way to get inventory scripts into automation controller is by putting the script into a source control repository.
+In Ansible Tower up to version 3.8, you could create inventory scripts directly in the web UI. Since automation controller 4.0 the only way to get inventory scripts into automation execution is by putting the script into a source control repository.
 
 For this lab the inventory script was already created in the Git repository you have configured as a *Project* earlier, so you can use this as-is.
 
@@ -172,5 +172,5 @@ After the inventory sync has finished check out the new hosts which were added b
 Using this simple example you have:
 
 * Created a script to query an inventory source
-* Integrated the script into controller
+* Integrated the script into automation execution
 * Populated an inventory using the custom script
