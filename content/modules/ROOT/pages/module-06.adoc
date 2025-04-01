@@ -2,7 +2,7 @@
 
 You might remember the concept of Smart Inventories. They allowed us to create inventories over multiple inventory sources and optionally combine them with some built-in filters. However, smart inventories also had some severe limitations, most notably, smart inventories lose host group membership information.
 
-Therefore, the concept of smart inventories, although still available in automation controller, is deprecated and replaced by constructed inventories. They are far more flexible and of course, they maintain the group membership information of your hosts.
+Therefore, the concept of smart inventories, although still available in automation execution, is deprecated and replaced by constructed inventories. They are far more flexible and of course, they maintain the group membership information of your hosts.
 
 == Introduction
 
@@ -20,7 +20,7 @@ plugin: ansible.builtin.constructed
 strict: false
 ----
 
-The first line informs the automation controller that we want to use the constructed inventory plugin. The *strict* setting set to "false" allows us to use variables later, which don't have to be defined. With *strict* set to "true" automation controller will fail to parse the constructed inventory, if a variable is not defined for any particular host.
+The first line informs the automation execution that we want to use the constructed inventory plugin. The *strict* setting set to "false" allows us to use variables later, which don't have to be defined. With *strict* set to "true" automation execution will fail to parse the constructed inventory, if a variable is not defined for any particular host.
 
 * Click **Save**
 
@@ -122,4 +122,4 @@ TIP: Have you noticed what happened to the separator? The dash ("**-**") automat
 Dashes used to be allowed in group names but not anymore.
 Name your groups (and roles and playbooks, as part of collections) like Python variables, with only letters, digits and underscores.
 
-If you want to learn more about constructed inventories, there is a great https://www.redhat.com/en/blog/how-to-use-the-new-constructed-inventory-feature-in-aap-2.4[Blog Post,window=_blank] and of course the https://docs.ansible.com/automation-controller/latest/html/userguide/inventories.html#ug-inventories-constructed[automation controller documentation,window=_blank].
+If you want to learn more about constructed inventories, there is a great https://www.redhat.com/en/blog/how-to-use-the-new-constructed-inventory-feature-in-aap-2.4[Blog Post,window=_blank] and of course the https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/using_automation_execution/controller-inventories#ref-controller-constructed-inventories[Automation execution documentation,window=_blank].
