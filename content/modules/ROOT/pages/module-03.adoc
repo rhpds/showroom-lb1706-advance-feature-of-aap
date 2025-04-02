@@ -63,7 +63,7 @@ You get into the **Workflow Visualizer** overview showing the first workflow nod
 
 // FIXME: we need to fix the screenshot and the explanations
 - The node gets annotated with the name of the job.
-- Click kebab right next to the existing node "Web Infra Deploy", you’ll see a number of options appearing:
+- Click the kebab-style menu right next to the existing node "Web Infra Deploy", you’ll see a number of options appearing:
 image:workflow-node-edit.png[width="80",height="200",float="right"]
 ** **Edit step** to edit the current workflow node
 ** **Add step and link** to add new workflow node

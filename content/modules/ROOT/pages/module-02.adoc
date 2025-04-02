@@ -4,7 +4,7 @@ This is an advanced lab, so we don’t really want you to use the web UI for eve
 To fully embrace automation and adopt the https://en.wikipedia.org/wiki/Infrastructure_as_code[infrastructure as code,window=_blank] methodology, **we want to use Ansible to configure our automation platform**.
 
 Since the automation platform is exposing all of its functionality via REST API, we can automate everything.
-Instead of using the API directly, it is highly recommended to use the https://github.com/ansible/awx/tree/devel/awx_collection[AWX,window=_blank] or the Ansible Collections to setup, configure and maintain your Red Hat Ansible Automation Platform using Ansible.
+Instead of using the API directly, it is highly recommended to use the Ansible Collections to setup, configure and maintain your Red Hat Ansible Automation Platform using Ansible.
 
 Before we jump into the details, let's have a quick overview of the currently available collections and how they rely on each other.
 
@@ -110,8 +110,8 @@ To leave press `Esc` multiple times to get up again in the views and eventually 
 IMPORTANT: do **not** leave the Navigator TUI (Text User Interface) before the job is finished!
 Check the colored text box in the bottom-right corner, it must go from [.green-background]#Running# to [.green-background]#Successful#.
 
-After the successful run, log into your {z_ansible_controller_web_ui_url}[automation controller web UI,window=_blank], using the user *{z_ansible_controller_admin_username}* and the usual password *{z_ansible_controller_admin_password}*.
-Make sure that you see the configured objects and a job "Source Control Update" successfully executed which cloned the git repository.
+After the successful run, log into your {z_ansible_controller_web_ui_url}[Ansible Automation Platform web UI,window=_blank], using the user *{z_ansible_controller_admin_username}* and the usual password *{z_ansible_controller_admin_password}*.
+Open **Automation Execution** and make sure that you see the configured objects and a job "Source Control Update" successfully executed which cloned the git repository.
 
 TIP: If you run this Ansible Playbook multiple times, you will notice the **ansible.controller.credential** module is not idempotent!
 Since automation controller stores the SSH key encrypted, the Ansible Module is unable to verify it has already been set and didn't change.

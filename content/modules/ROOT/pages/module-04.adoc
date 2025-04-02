@@ -13,7 +13,7 @@ They would like to allow this new member:
 - Running the webapp deployment job.
 
 However, the new team member should not be allowed to change anything else in AAP for now.
-Sounds like a job for Automation Execution **Surveys** and AAP **Role Based Access Control**!
+Sounds like a job for Automation Execution **Surveys** and Ansible Automation Platform **Role Based Access Control**!
 
 == Add the survey
 

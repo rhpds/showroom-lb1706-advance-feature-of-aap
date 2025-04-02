@@ -1,6 +1,6 @@
 = Secure the Automation Supply Chain
 
-Project signing is a relatively new feature in Red Hat Ansible Automation Platform 2. Users can sign content like playbooks, inventories, etc that live in a project (backed by a version control repository) and configure automation controller to verify whether or not that content has been changed form the signed versions. This way users can make sure the supply chain remains untampered, from the source repository to running an automation job.
+Project signing allows users to sign content like playbooks, inventories, etc that live in a project (backed by a version control repository) and configure automation controller to verify whether or not that content has been changed form the signed versions. This way users can make sure the supply chain remains untampered, from the source repository to running an automation job.
 
 The best way to understand how this works is, as most times, to give it a try. Read on!
 
@@ -14,9 +14,7 @@ You will clone this repository locally to you bastion host and then see how auto
 
 === Access Gitea
 
-Point your browser to
-
-{z_gitea_web_ui_url}[window=_blank]
+Point your browser to {z_gitea_web_ui_url}[window=_blank] or use the tab in showroom.
 
 Log in to Gitea as user `{z_gitea_web_ui_username}` with the password `{z_gitea_web_ui_password}`.
 
@@ -99,7 +97,7 @@ Check the content of the exported public key using the below command.
 cat ~/signing_demo.asc
 ----
 
-We will use all the content of this file in the next steps, when we setup the verification of projects in automation controller.
+We will use the content of this file in the next steps, when we setup the verification of projects in automation controller.
 
 And finally, run the below command to list the gpg keys that exist on the system, this should have only one (valid) key pair, the one just created.
 
@@ -117,11 +115,12 @@ Now that we have prepared the signing keys let's sign our `{gitea_controller_pro
 sudo dnf install ansible-sign -y
 ----
 
-The first step toward signing content is to create a file that tells `ansible-sign` which files to protect. This file should be called `MANIFEST.in` and reside in the project root directory. So go ahead and create the file `/home/{z_gitea_web_ui_username}/{gitea_controller_project}` using your favorite editor with the following content:
+The first step toward signing content is to create a file that tells `ansible-sign` which files to protect. This file should be called `MANIFEST.in` and reside in the project root directory. So go ahead and create the file `/home/{z_gitea_web_ui_username}/{gitea_controller_project}/MANIFEST.in` using your favorite editor with the following content:
 
 [source,shell,role=execute,subs="attributes"]
 ----
 recursive-exclude .git *
+recursive-exclude .vscode *
 recursive-exclude constructed-inventory *
 recursive-exclude inventory *
 exclude .ansible-lint
@@ -129,7 +128,7 @@ exclude .gitignore
 include *.yml
 ----
 
-The above command will create a new `MANIFEST.in` file in the `{gitea_controller_project}` local repository. In this case we just include every file in the repository root that matches `*.yml` and exclude everything else. In the next step we will finally sign the files listed in the `MANIFEST.in` file.
+In this case we just include every file in the repository root that matches `*.yml` and exclude everything else. In the next step we will finally sign the files listed in the `MANIFEST.in` file.
 
 [source,shell,role=execute,subs="attributes"]
 ----
@@ -138,7 +137,7 @@ ansible-sign project gpg-sign /home/{z_bastion_ssh_user_name}/{gitea_controller_
 
 The above command tells the `ansible-sign` tool to gpg-sign the `{gitea_controller_project}` project locally.
 
-Once you run the command, you will see that the GPG signing was successful and you can confirm that by looking at the new files that were createdby `ansible-sign`:
+Once you run the command, you will see that the GPG signing was successful and you can confirm that by looking at the new files that were created by `ansible-sign`:
 
 [source,shell,role=execute,subs=attributes]
 ----
@@ -153,7 +152,7 @@ TIP: `head -n-0` is a trick to output the content of multiple files separated by
 
 To make the repository available as a Project to automation controller, the new files must be pushed from our local Git clone to the Gitea repository. Add the new files for git staging:
 
-[source,shell,role=execute]
+[source,shell,role=execute,subs=attributes]
 ----
 cd ~/{gitea_controller_project}
 git add .ansible-sign/ MANIFEST.in
@@ -176,9 +175,9 @@ git push
 
 VS Code will open a _small_ dialog at the top of the window asking for username and password, enter `{z_gitea_web_ui_username}` and as password `{z_gitea_web_ui_password}`.
 
-== Setup automation controller
+== Setup Automation Execution
 
-Now, we have to setup automation controller to use and verify our signed content.
+Now, we have to configure our automation execution to use and verify our signed content.
 
 === Create Credential with signing public key
 
@@ -190,42 +189,43 @@ cat ~/signing_demo.asc
 ----
 
 Copy _all_ of its contents _including_ `-----BEGIN PGP PUBLIC KEY BLOCK-----` and `-----END PGP PUBLIC KEY BLOCK-----`.
-Go to the automation controller web UI tab and follow **Resources** ⇒ **Credentials** on the left-hand side menu:
+In the web UI go to *Automation Execution* ⇒ *Infrastructure* ⇒ *Credentials*. Then:
 
-* click on the blue **Add** button.
+* click on the blue **Create Credential** button.
 * **Name**: ansible-sign
 * **Credential Type**: GPG Public Key
-* This will open a textbox for you to paste the public key that is in the Clipboard. Paste the public key and click **Save**.
+* This will open a textbox for you to paste the public key that is in the Clipboard. Paste the public key and click **Create Credential**.
 
 This will add the public key as a Credential in your automation controller.
 
 === Create Project with signed content
 
-To configure the Gitea repository as a Project we need an SCM credential. In the automation controller web UI click on **Resources ⇒ Credentials** on the left-hand side menu:
+To configure the Gitea repository as a Project we need an SCM credential. Again in the *Credentials* section do:
 
-* Click on the blue **Add** button.
+* Click on the blue **Create credential** button.
 * **Name**: gitea
 * **Organization**: Default
 * **Credential Type**: Source Control
 * **Username**: {z_gitea_web_ui_username}
 * **Password**: {z_gitea_web_ui_password}
-* Click **Save**.
+* Click **Create credential**.
 
-Now, to create the Project, click on **Resources ⇒ Projects** on the left-hand side menu:
+Now, to create the Project, go to *Automation Execution* ⇒ *Projects*:
 
-* Click on the blue **Add** button
+* Click on the blue **Create project** button
 * **Name**: Signed Project
+* **Organization:** Default
 * **Source Control Type**: Git
 * **Content Signature Validation Credential**: ansible-sign
 * **Source Control URL**: The clone URL of your Gitea repository, {z_gitea_web_ui_url}/{z_gitea_web_ui_username}/{gitea_controller_project}.git
 * **Source Control Credential**: gitea
-* Click **Save**
+* Click **Create project**
 
 The important part of the Project configuration is **Content Signature Validation Credential**, this tells automation controller to use the GPG key in the credentials to verify the repository.
 
 == Check if signatures were validated in controller
 
-Let's check if the signatures have been checked during the initial Project sync when you hit **Save**.
+Let's check if the signatures have been checked during the initial Project sync when you hit **Create Project**.
 
 Click on **Jobs** on the left menu and then click the most recent job that ran the project sync for the **Signed Project**. If this job was successful, that means the signature validation was successful. You can also verify this by looking at the tasks in the job run, scroll the job run to find the below tasks:
 
@@ -261,7 +261,7 @@ VS Code will again open a _small_ dialog at the top of the window asking for use
 
 If this change was legit, you would have re-signed the repository content. This way automation controller should recognize the signature of the file is not valid anymore and fail the repository sync. Give it a try:
 
-* Go to the automation controller web UI **Resources ⇒ Project** and start a sync of the **Signed Project** repository.
+* In the web UI go to *Automation Execution* ⇒ *Projects* and start a sync of the **Signed Project** repository by clicking the circular arrow icon.
 * Check the result in the **Jobs** list!
 
 The sync job should fail and the output should clearly indicate why:
@@ -276,4 +276,4 @@ TASK [Verify project content against checksum manifest] ************************
 fatal: [localhost]: FAILED! => {"changed": false, "msg": "Checksum mismatch: apache_install.yml"}
 ----
 
-We changed a signed file and skipped signing it to see the behavior in automation controller. Automation controller failed the verification and shows which files were not signed in the Project refusing to sync the project and consequently running the Playbook.
+We changed a signed file and skipped signing it again to see the result in automation execution. The verification failed and the output shows which files were not signed in the Project. 
