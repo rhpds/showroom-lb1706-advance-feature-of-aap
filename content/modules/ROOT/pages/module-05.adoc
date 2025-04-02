@@ -2,7 +2,7 @@
 
 In Ansible and the Ansible Automation Platform, as you know, everything starts with an inventory. There are several methods how inventories can be created. Starting from simple static definitions over importing inventory files to dynamic and smart inventories.
 
-In real life it’s very common to deal with external dynamic inventory sources (think cloud, CMDB, containers, ...). In this chapter we’ll introduce you to building dynamic inventories using custom inventory scripts. Another great feature of the Ansible Automation Platform to deal with inventories is the Constructed Inventory feature, which you’ll do a lab on as well.
+In real life it’s very common to deal with external dynamic inventory sources (think cloud, CMDB, containers, ...). In this chapter we’ll introduce you to building dynamic inventories using custom inventory scripts. Another great feature of the Ansible Automation Platform to deal with inventories is the Constructed Inventory feature, which you’ll learn more about in the next chapter.
 
 == Dynamic Inventories
 
@@ -148,24 +148,29 @@ For this lab the inventory script was already created in the Git repository you 
 
 You can directly proceed to adding the dynamic inventory and pointing it to the inventory script.
 
-* In the web UI, open *Inventories* in the *Resources* section.
-* To create a new custom inventory, click the blue Add button and click on *Add inventory*.
+* In the AAP web UI, open *Automation Execution* -> *Infrastructure* -> *Inventories*.
+* To create a new inventory, click the blue *Create inventory* drop-down and click on *Create inventory*.
 * Fill in the needed data:
   ** *Name:* Cloud inventory
-* Click *Save*
-* Change to the *Sources* tab and once more click the blue add button.
+  ** *Organization:* Default
+* Click *Create inventory*
+* Change to the *Sources* tab and click the blue *Create Source* button.
 * Fill in the needed data:
   ** *Name:* Cloud inventory Script
   ** *Source:* Sourced from a Project
   ** *Project:* Lab Project Repo
   ** *Inventory file:* constructed-inventory/inventory-script
   ** enable *Update on launch*
-* Click on *Save*
-* Start the initial sync by clicking on *Sync*
+  ** *Cache timeout (seconds)*: 300
+* Click on *Create source*
+* Go back to the *Sources* tab of the Cloud inventory
+* Start the inventory update by clicking the rocket icon
 
-Navigate to *Jobs* in the *Views* section to watch the initial sync, the *Type* is `Inventory Sync`.
+image::inventory-source.png[800,600]
 
-After the inventory sync has finished check out the new hosts which were added by it to your _Cloud inventory_, by navigating to *Hosts* in the *Resources* section. You should find a number of new hosts according to the JSON output above.
+Navigate to *Jobs* in the *Automation Execution* section to watch the initial sync, the *Type* is `Inventory Sync`.
+
+After the inventory sync has finished check out the new hosts which were added by it to your _Cloud inventory_, by going to *Automation Execution* -> *Infrastructure* -> *Hosts*. You should find a number of new hosts according to the JSON output above.
 
 === What is the take-away?
 
