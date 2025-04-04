@@ -123,9 +123,10 @@ ansible-navigator --version
 ----
 
 where the result should be something like (your actual version might differ):
+
 [source,shell]
 ----
-ansible-navigator 3.4.1
+ansible-navigator 25.1.0
 ----
 
 Have now a look at your Ansible Navigator configuration file. It's a dot file in your user's home directory and can be printed to screen with the following command:
