@@ -14,9 +14,9 @@ You will clone this repository locally to you bastion host and then see how auto
 
 === Access Gitea
 
-Point your browser to {z_gitea_web_ui_url}[window=_blank] or use the tab in showroom.
+Point your browser to {z_gitea_web_ui_url}[window=_blank] (there is no tab -yet- for it in Showroom).
 
-Log in to Gitea as user `{z_gitea_web_ui_username}` with the password `{z_gitea_web_ui_password}`.
+Sign in to Gitea as user `{z_gitea_web_ui_username}` with the password `{z_gitea_web_ui_password}`.
 
 Look around, to the right in the UI you'll see a list of repositories, click the `{z_gitea_web_ui_username}/{gitea_controller_project}` link. This will take you to the repository.
 
@@ -70,7 +70,7 @@ Expire-Date: 0
 ----
 
 Think of this file as the instructions given to the GnuPG library on the system about the type of key pair we want to create.
-This creates a key pair _without_ a passphrase (of course, normally you would want to have a passphrase for https://www.redhat.com/sysadmin/creating-gpg-keypairs[your private GPG key]).
+This creates a key pair _without_ a passphrase (of course, normally you would want to have a passphrase for https://www.redhat.com/sysadmin/creating-gpg-keypairs[your private GPG key^]).
 
 Now create a GPG key pair using the `gpg.txt` file. Run the following commands in the Terminal window to create the key pair.
 

@@ -1,32 +1,32 @@
 # Configure resources with Ansible
 
 This is an advanced lab, so we don’t really want you to use the web UI for everything.
-To fully embrace automation and adopt the https://en.wikipedia.org/wiki/Infrastructure_as_code[infrastructure as code,window=_blank] methodology, **we want to use Ansible to configure our automation platform**.
+To fully embrace automation and adopt the https://en.wikipedia.org/wiki/Infrastructure_as_code[infrastructure as code^] (IaC) and https://redhat-cop.github.io/aap_config_as_code_docs/[Configuration as Code^] (CaC) methodology, **we want to use Ansible to configure our automation platform**.
 
 Since the automation platform is exposing all of its functionality via REST API, we can automate everything.
 Instead of using the API directly, it is highly recommended to use the Ansible Collections to setup, configure and maintain your Red Hat Ansible Automation Platform using Ansible.
 
 Before we jump into the details, let's have a quick overview of the currently available collections and how they rely on each other.
 
-- https://console.redhat.com/ansible/automation-hub/repo/published/ansible/controller/[ansible.controller] This Ansible collection allows for easy interaction with an Red Hat Ansible Automation Platform server via Ansible playbooks.
-- https://console.redhat.com/ansible/automation-hub/repo/published/ansible/eda/[ansible.eda] This collection contains event source plugins, event filters and example rulebooks to be used with ansible-rulebook.
-- https://console.redhat.com/ansible/automation-hub/repo/published/ansible/hub/[ansible.hub] This Ansible collection allows for easy interaction with an Ansible Automation Hub server via Ansible playbooks.
-- https://console.redhat.com/ansible/automation-hub/repo/published/ansible/platform/[ansible.platform] This collection contains modules that can be used to automate the creation of resources on an install of Ansible Automation Platform.
+- https://console.redhat.com/ansible/automation-hub/repo/published/ansible/controller/[ansible.controller^] This Ansible collection allows for easy interaction with an Red Hat Ansible Automation Platform server via Ansible playbooks.
+- https://console.redhat.com/ansible/automation-hub/repo/published/ansible/eda/[ansible.eda^] This collection contains event source plugins, event filters and example rulebooks to be used with ansible-rulebook.
+- https://console.redhat.com/ansible/automation-hub/repo/published/ansible/hub/[ansible.hub^] This Ansible collection allows for easy interaction with an Ansible Automation Hub server via Ansible playbooks.
+- https://console.redhat.com/ansible/automation-hub/repo/published/ansible/platform/[ansible.platform^] This collection contains modules that can be used to automate the creation of resources on an install of Ansible Automation Platform.
 
 == The Scenario
 
-For the next chapters we need a number of resources configured in automation controller:
+For the next chapters we need a number of resources configured in AAP:
 
 - Static **Inventory** with two hosts
 - **Credentials**
 - Two **Projects**
 - Two **Job Templates**
 
-This would involve a lot of error prone clicking in the web UI, so you'll use the pro way: a playbook was prepared upfront to save time, but you will still learn how to use Ansible to configure automation controller.
+This would involve a lot of error prone clicking in the web UI, so you'll use the pro way: a playbook was prepared upfront to save time, but you will still learn how to use Ansible to configure the Automation Execution part of AAP.
 
 == Authentication
 
-The Ansible modules we use in the playbook need to talk to automation controller and require authentication, of course. There are a number of ways to accomplish this, you could e.g. set the URL/user name/password as environment variables.
+The Ansible modules we use in the playbook need to talk to AAP and require authentication, of course. There are a number of ways to accomplish this, you could e.g. set the URL/user name/password as environment variables.
 
 In this lab we use a little trick to save time and make it less error prone.
 We set the credentials and other values directly in the `.ansible-navigator.yml` file in your home directory, so `ansible-navigator` will pick them up with every run.
@@ -66,7 +66,7 @@ The environment variables prefixed with `CONTROLLER_` are the connection and cre
 NOTE: For your convenience we added the authentication credentials for automation controller to the configuration, so you don't have to manually log in. In most real world scenarios you probably don't want to do this and will not store your password in a clear text configuration file.
 
 TIP: For performance and security reasons, it is recommended "in real life" to generate and use a token for your automation.
-Check the https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/using_content_navigator/[ansible-navigator] documentation for details on how to do this.
+Check the https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/using_content_navigator/[ansible-navigator^] documentation for details on how to do this.
 
 == Create the Playbook
 
@@ -78,8 +78,6 @@ git clone {z_gitea_web_ui_url}/{z_gitea_web_ui_username}/{gitea_controller_proje
 cd {gitea_controller_project}
 cat configure-controller.yml
 ----
-
-NOTE: You can find your login credentials on the xref:lab-access.adoc[Lab Access] page.
 
 Use `cat` or the VS Code editor to have a good look at what the `configure-controller.yml` Playbook is supposed to do.
 
@@ -93,7 +91,9 @@ Tasks:
 +
 TIP: SSH keys have already been created and distributed in your lab environment and `sudo` has been setup on the managed hosts to allow password-less login. When you SSH into a host as a regular user from the bastion node you will become user **ec2-user** on the host you logged in.
 
-* **Lab Project**: A Project is created, the content used in this lab is hosted on GitLab in the project https://gitlab.com/ansible-labs-crew/playbooks-adv-controller-2025[https://gitlab.com/ansible-labs-crew/playbooks-adv-controller-2025,window=_blank].
+* **Create Projects**: different projects are created based on public Git repos which we have synced to your environment (check how we define the scm variable if you're interested in the details).
+
+* **Create Web Infra and Dev Templates**: and finally two job templates are created based on the previously added elements (the trinity inventory, credential and project).
 
 === Run the Playbook
 
@@ -104,10 +104,11 @@ After you have inspected the Playbook finally run it:
 ansible-navigator run configure-controller.yml
 ----
 
-While in `ansible-navigator` press a line number e.g. to get more information about a play or tasks. Note: this works only for less then 10 lines, if you have more, you need to press `:` first.
-To leave press `Esc` multiple times to get up again in the views and eventually out of Navigator.
+While in `ansible-navigator` press a line number e.g. to get more information about a play or tasks.
+This works only for less then 10 lines, if you want to inspect a line number with 2 digits or more, you need to prefix it with `:`.
+To leave, press `Esc` multiple times to get up again in the views and eventually out of Navigator.
 
-IMPORTANT: do **not** leave the Navigator TUI (Text User Interface) before the job is finished!
+IMPORTANT: Do **not** leave the Navigator TUI (Text User Interface) before the job is finished!
 Check the colored text box in the bottom-right corner, it must go from [.green-background]#Running# to [.green-background]#Successful#.
 
 After the successful run, log into your {z_ansible_controller_web_ui_url}[Ansible Automation Platform web UI,window=_blank], using the user *{z_ansible_controller_admin_username}* and the usual password *{z_ansible_controller_admin_password}*.

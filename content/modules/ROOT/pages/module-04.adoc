@@ -31,8 +31,7 @@ In the AAP UI, open **Automation Execution ⇒ Templates ⇒ Deploy Webapplicati
 ** **Answer variable name:** content
 ** **Answer type:** Text
 - Click **Create survey question**
-
-To enable the survey, while still on the Survey tab switch the slider button from **Survey disabled** to **Survey enabled** (it turns from grey to blue).
+- To enable the survey, while still on the Survey tab, switch the slider button from **Survey disabled** to **Survey enabled** (it turns from grey to blue).
 
 == Test the survey
 
@@ -76,13 +75,13 @@ To do so, click on the small arrow head next to the tick box on the left of each
 
 The Night Shift personal though is alone at night and they need to be able to circumvent approval steps or they might not be able to do their job.
 
-NOTE: for sake of simplicity and time, our workflow doesn't have an approval step.
+NOTE: For sake of simplicity and time, our workflow doesn't have an approval step.
 Feel free to add one between the two steps if you happen to have time left at the end of the session.
 This said, think about the fact that adding an approval step is adding a manual step in what should be an end-to-end automated workflow.
 
 So we decide to create our own role for them:
 
-* Click on the blue **Create role** button, and enter:
+* Click on the blue **Create role** button (potentially hidden behind a 3 dots menu), and enter:
 ** **Name:** WorkflowNightShifter
 ** **Content type:** Workflow job template
 ** **Permissions:** (select the following ones)
@@ -91,13 +90,11 @@ So we decide to create our own role for them:
 *** [x] View workflow job template
 * Press the blue **Create role** button
 
-Again filtering on "Workflow", you can easily see that our new role is "Editable" and not "Built-in".
+Back to Automation Execution Roles and again filtering on "Workflow", you can easily see that our new role is "Editable" and not "Built-in".
 
 === Create User
 
-// FIXME continue review
-
-Create the user:
+Create now the user as follows:
 
 - In the AAP web UI menu under **Access Management ⇒ Users**
 - Click the **Create user** button
@@ -136,7 +133,7 @@ Now you can add the new user to the team:
 
 User `nightshift` is now a member of the `NightShifters` Team.
 
-TIP: you could have reached the same objective by using the **Teams** tab of the user's view.
+TIP: you could have reached the same objective by using the **Teams** tab of the user's view instead of the **Users** tab of the team's view.
 
 === Grant Permissions
 

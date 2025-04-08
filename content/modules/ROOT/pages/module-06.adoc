@@ -47,6 +47,8 @@ compose:
   ansible_host: inventory_hostname | lower()
 ----
 
+TIP: press Ctrl+Enter in the Source variables field to add a new line.
+
 When connecting to a remote host Ansible is using the `ansible_host` variable - this is different from the `inventory_hostname` which is what we for example see in the UI when we click on *Hosts*. Click *Save inventory* and then *Sync inventory* to apply the constructed inventory.
 
 After the sync completed, check the tabs *Hosts* and *Groups*. You should see a host `CLOUD3.cloud.example.com` and if you click on it, you will see it has a variable `ansible_host` with the FQDN converted to lower case characters.

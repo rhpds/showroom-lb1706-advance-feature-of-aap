@@ -35,3 +35,4 @@ ssh {z_gitea_web_ui_username}@{z_bastion_host_name}
 ----
 
 TIP: the Showroom tab named "Terminal" gives you a similar look & feel as would SSH, without the need to login.
+Copy works generally with Ctrl+C and Paste with Shift+Ctrl+V; if not, simply use the right mouse button and select Copy resp. Paste from the menu.

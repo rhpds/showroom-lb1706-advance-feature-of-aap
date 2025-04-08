@@ -4,10 +4,10 @@
 
 Already know the basics of Red Hat Ansible Automation Platform and want more?
 
-Note: In Ansible Automation Platform 2.5, Automation Controller is now accessible through the automation execution interface in the new UI, providing the same capabilities.
-If you're familiar with previous versions of AAP, note that from now on, we will refer to Automation Controller as automation execution to align with the latest terminology.
+NOTE: Since Ansible Automation Platform 2.5, Automation Controller is now accessible through the automation execution interface in the new UI, providing the same capabilities.
+If you're familiar with previous versions of AAP, note that from now on, we will refer to _automation controller_ as _Automation Execution_ to align with the latest terminology.
 
-In this hands-on lab, we'll introduce you to some advanced capabilities of automation execution so can benefit even more from using Ansible Automation Platform (often abbreviated as AAP).
+In this hands-on lab, we'll introduce you to some advanced capabilities of Automation Execution so can benefit even more from using Ansible Automation Platform (often abbreviated as AAP).
 You'll learn how to:
 
 * Configure automation execution resources with Ansible
@@ -32,7 +32,7 @@ Your lab includes a number of servers:
 [TIP]
 ====
 . All access information has been summarized for your convenience on page link:lab-access.html[Lab Access],
-. This page and all others are accessible from the upper left corner image:corner_menu.png[role=half-width]
+. This page and all others are accessible from the upper left corner image:corner_menu.png[role=half-width] on narrow screens, the menu is expanded to the left on broader screens.
 ====
 
 == Working the Lab
@@ -40,7 +40,7 @@ Your lab includes a number of servers:
 Some hints to get you started:
 
 - Don’t type everything manually, use copy & paste from the browser when appropriate, but take your time to understand what you are actually doing.
-- To **edit files** or **open a terminal window**, we provide **VS Code Server**, basically the great VS Code Editor running in your browser.
+- To **edit files** or **open a terminal window**, we provide **VS Code Server**, basically the great Visual Studio Code Editor running in your browser.
 
 TIP: Commands you are supposed to run can be shown with or without the expected output
 
@@ -106,7 +106,7 @@ The "Terminal" tab gives you the same impression as SSH without the need to logi
 
 == Lab Configuration
 
-Most prerequisite tasks have already been done for you:
+Most prerequisite tasks have already been fulfilled for you:
 
 - Ansible software is installed
 - `sudo` has been configured on the managed hosts to run commands that require root privileges.

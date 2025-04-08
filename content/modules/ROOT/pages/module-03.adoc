@@ -40,7 +40,7 @@ TIP: If you want to know what the Playbooks look like, check out the Gitlab URL 
 
 == Access the Automation Execution UI
 
-In your browser open {z_ansible_controller_web_ui_url}[window=_blank] and login as user `{z_ansible_controller_admin_username}` with the password `{z_ansible_controller_admin_password}`.
+In your browser open {z_ansible_controller_web_ui_url}[window=_blank] (or click on the tab AAP" on the right of those instructions) and login as user `{z_ansible_controller_admin_username}` with the password `{z_ansible_controller_admin_password}`.
 
 == Configure the Workflow
 
@@ -88,7 +88,7 @@ image::webapplication-workflow.png[Workflow deploying Web Infra and App]
 
 Your **Deploy Webapplication** workflow is ready to go, launch it.
 
-- Click the **Launch** button directly or go to the the **Templates** view and launch the **Deploy Webapplication** workflow by clicking the rocket icon.
+- Click the **Launch** button directly (potentially hidden behind a 3 dots menu) or go to the the **Templates** view and launch the **Deploy Webapplication** workflow by clicking the rocket icon.
 
 image::job_workflow.png[]
 
@@ -96,7 +96,7 @@ Note how the workflow run is shown in the job view as a visual representation of
 
 If you want to look at the actual Jobs behind the workflow nodes, click the workflow node. If you want to get back from a details view to the corresponding workflow, just hit your browsers back button or click on **Source Workflow Job** in the job template details.
 
-After the job has finished, check if everything worked fine. To test the NodeJS application, in your **VS Code** terminal, run:
+After the job has finished, check if everything worked fine. To test the NodeJS application in your terminal, run:
 
 [subs="attributes",source,bash,role=execute]
 ----
