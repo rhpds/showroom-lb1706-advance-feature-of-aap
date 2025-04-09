@@ -51,7 +51,7 @@ Now that you know your way around, go ahead and proceed to the next chapter!
 == Ah wait, before we let you go!
 
 The new interface is reactive, meaning it changes its appearance depending on the width of your screen.
-The next picture shows two screenshots of the UI, from a wide screen on the right, and a narrow one on the left:
+The next picture shows two screenshots of the UI, from a wide screen on the left, and a narrow one on the right:
 
 .Wide and narrow screens side by side
 image::narrow_screen.png[Wide and narrow screens side by side]
