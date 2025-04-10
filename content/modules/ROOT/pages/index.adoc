@@ -54,10 +54,10 @@ We call this user interface "Showroom" so don't wonder if you see this name here
 .Showroom navigation overview
 image::showroom.drawio.png[Showroom navigation overview]
 
-The lab instructions are made of sections, or exercises, which you should do in order, not forgetting steps as they might be relevant to following exercises.
+The lab instructions are made of chapters, or exercises, which you should do in order, not forgetting steps as they might be relevant to following exercises.
 
-You can jump back to a specific section using the list in the top left corner.
-Each section has a title and a table of content, followed by instructions, on the left side.
+You can jump back to a specific chapter using the list in the top left corner.
+Each chapter has a title and a table of content, which might be located at the top of the instructions or as a separate menu to the right, depending on your browser width.
 
 On the right side, there are different tabs each offering a different access to your environment, described in more details in the next chapter.
 You may use the resizing handle in the middle to give more space to the environment or to the instructions.
@@ -67,7 +67,7 @@ TIP: if you don't see the right hand tabs in your environment, don't worry, you 
 == Accessing your Lab Environment
 
 As hinted in the previous chapter, you can access most elements of the environment through the showroom tabs.
-In doubt, check the xref:lab-access.adoc[Lab Access] section.
+If in doubt, check the xref:lab-access.adoc[Lab Access] section.
 
 The following chapters explain in more details how to access the command line.
 
@@ -81,7 +81,7 @@ You should be greeted with a login screen:
 
 image::vscode-pwd.png[500,300]
 
-Use the password **{z_vscode_web_ui_password}** to log in to the **VS Code** server web UI. Now open a new terminal by heading to the menu item **Terminal** at the top of the page and select **New Terminal**. A new section will appear in the lower half of the screen and you will be greeted with a prompt:
+Use the password **{z_vscode_web_ui_password}** to log in to the **VS Code** server web UI. Now open a new terminal by heading to the menu item **Terminal** at the top of the **VS Code** UI and select **New Terminal** (the menu item might be hidden depending on browser width, behind three dots). A new section will appear in the lower half of the screen and you will be greeted with a prompt:
 
 image::vscode-terminal.png[]
 
@@ -163,9 +163,9 @@ This command gives you information about all currently installed Execution Envir
 
 image::navigator-ee-menu.png[]
 
-Selecting **2** for `Ansible version and collections` will show us all Ansible Collections installed on that particular EE, and the version of `ansible-core`:
+Selecting e.g. **0** for `Image information` will show information about the execution environment image you are inspecting:
 
-image::navigator-ee-collections.png[]
+image::navigator-ee-info.png[]
 
 To get back to the preceding view in `ansible-navigator` press **Esc**, if needed several times.
 The last press in the main menu will get you out of Navigator.
