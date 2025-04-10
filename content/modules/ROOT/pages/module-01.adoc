@@ -1,5 +1,7 @@
 # Introduction to Unified UI
 
+## Overview
+
 With Ansible Automation Platform 2.5 we have introduced a new, unified Web UI.
 It provides consistent access to the components of AAP in one interface. 
 
@@ -23,6 +25,8 @@ But we'll of course change this during the course of this lab.
 But there is more: if you scroll down, you'll find a section called **Quick Starts**. These are interactive guides to get you started quickly with key Ansible Automation Platform features. This will help introduce new users to Ansible Automation Platform.
 
 image::quickstarts.png[800,600]
+
+## Menu Items
 
 Now let's briefly go through the other menu items:
 
