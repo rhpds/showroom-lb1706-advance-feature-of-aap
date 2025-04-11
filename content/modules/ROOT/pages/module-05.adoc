@@ -122,16 +122,16 @@ TIP: Make sure to really create the script in `/home/{z_bastion_ssh_user_name}/`
 
 * Make the script executable:
 +
-[source,shell,role=execute]
+[source,shell,role=execute,subs="attributes"]
 ----
-chmod +x dyninv.sh
+chmod +x /home/{z_bastion_ssh_user_name}/dyninv.sh
 ----
 
 * Execute it:
 +
-[source,shell,role=execute]
+[source,shell,role=execute,subs="attributes"]
 ----
-./dyninv.sh --list
+/home/{z_bastion_ssh_user_name}/dyninv.sh --list
 ----
 
 This should give you the same output as above.
@@ -148,7 +148,7 @@ For this lab the inventory script was already created in the Git repository you 
 
 You can directly proceed to adding the dynamic inventory and pointing it to the inventory script.
 
-* In the AAP web UI, open *Automation Execution* -> *Infrastructure* -> *Inventories*.
+* In the AAP web UI, open *Automation Execution* ⇒ *Infrastructure* ⇒ *Inventories*.
 * To create a new inventory, click the blue *Create inventory* drop-down and click on *Create inventory*.
 * Fill in the needed data:
   ** *Name:* Cloud inventory
@@ -170,7 +170,7 @@ image::inventory-source.png[800,600]
 
 Navigate to *Jobs* in the *Automation Execution* section to watch the initial sync, the *Type* is `Inventory Sync`.
 
-After the inventory sync has finished check out the new hosts which were added by it to your _Cloud inventory_, by going to *Automation Execution* -> *Infrastructure* -> *Hosts*. You should find a number of new hosts according to the JSON output above.
+After the inventory sync has finished check out the new hosts which were added by it to your _Cloud inventory_, by going to *Automation Execution* ⇒ *Infrastructure* ⇒ *Hosts*. You should find a number of new hosts according to the JSON output above.
 
 === What is the take-away?
 

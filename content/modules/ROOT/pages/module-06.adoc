@@ -55,7 +55,7 @@ After the sync completed, check the tabs *Hosts* and *Groups*. You should see a 
 
 == Groups
 
-Many organizations use a strict naming convention for hostnames. Often a hostname indicates the purpose and the stage of a given system. In our case we have a couple of hosts which are in the 'prod` and in the `dev` sub domain. We can use this information to automatically add the hosts to the respective group. Let's extend our constructed inventory configuration.
+Many organizations use a strict naming convention for hostnames. Often a hostname indicates the purpose and the stage of a given system. In our case we have a couple of hosts which are in the `prod` and in the `dev` sub domain. We can use this information to automatically add the hosts to the respective group. Let's extend our constructed inventory configuration.
 
 Navigate back to your constructed inventory by clicking on *Inventories* under *Infrastructure* in the *Automation Execution* section of the main menu and then edit the `Constructed Inventory` by clicking on the pen icon on the right hand side.
 
