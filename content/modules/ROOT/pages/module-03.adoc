@@ -31,7 +31,7 @@ When there is a new NodeJS-based website to deploy, two main steps need to happe
 - Deploy the most recent version of the JavaScript web application.
 - Make sure everything is prepared to run the application like the directory structure and service restarts.
 
-When you run the Playbook during the xref:module-01.adoc[Configure Ansible Automation Platform with Ansible] chapter some resources you need here were already setup:
+When you run the Playbook during the xref:module-02.adoc[Configure Ansible Automation Platform with Ansible] chapter some resources you need here were already setup:
 
 - Two Git repositories were setup as Projects `Webdev Git Repo` and `Webops Git Repo`
 - Playbooks were configured as Job Templates `Web App Deploy` and `Web Infra Deploy`
@@ -88,7 +88,7 @@ image::webapplication-workflow.png[Workflow deploying Web Infra and App]
 
 Your **Deploy Webapplication** workflow is ready to go, launch it.
 
-- Click the **Launch** button directly (potentially hidden behind a 3 dots menu) or go to the the **Templates** view and launch the **Deploy Webapplication** workflow by clicking the rocket icon.
+- Click the **Launch** button directly (potentially hidden behind a kebap-style/3 dots menu item) or go to the the **Templates** view and launch the **Deploy Webapplication** workflow by clicking the rocket icon.
 
 image::job_workflow.png[]
 

@@ -18,7 +18,7 @@ Sounds like a job for Automation Execution **Surveys** and Ansible Automation Pl
 == Add the survey
 
 Surveys allow to define the content of variables before running a job.
-The "Hello World!" our NodeJS application prints out, is actually defined in the dev https://gitlab.com/ansible-labs-crew/playbooks-dev/-/raw/master/install_node_app.yml[install_node_app playbook,window=_blank] in the variable `content`.
+The "Hello World!" our NodeJS application prints out, is actually defined in the https://gitlab.com/ansible-labs-crew/playbooks-dev/-/raw/master/install_node_app.yml[install_node_app playbook,window=_blank] in the variable `content`.
 
 TIP: If the AAP UI is not open anymore, refer to the xref:lab-access.adoc[Lab Access] page for the access details.
 
