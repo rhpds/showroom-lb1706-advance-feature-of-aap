@@ -54,7 +54,38 @@ We call this user interface "Showroom" so don't wonder if you see this name here
 .Showroom navigation overview
 image::showroom.drawio.png[Showroom navigation overview]
 
-The lab instructions are made of chapters, or exercises, which you should do in order, not forgetting steps as they might be relevant to following exercises.
+The lab instructions are made of chapters, or exercises. The easiest way would be to do them in the order they appear in the lab guide.
+
+=== Leaving out Chapters
+
+We understand that some of you have joined this lab because they are interested in certain topics. If this is you, here is a quick outline of the paths you could follow, i.e. what chapters you might leave out without breaking the flow or dependencies:
+
+*Mandatory to prepare the lab environment:*
+
+0.{empty} Lab introduction
+
+1.{empty} Introduction to Unified UI
+
+2.{empty} Configure resources with Ansible
+
+*These have to be done together as _chapter 4._ depends on _chapter 3._:*
+
+3.{empty} Workflows for more efficient collaboration
+
+4.{empty} Surveys and the revamped access rights for self-service access
+
+*These have to be done together as _chapter 6._ depends on _chapter 5._:*
+
+5.{empty} Use dynamic inventories to scale your automation
+
+6.{empty} Constructed inventory feature
+
+*Can be done standalone:*
+
+7.{empty} Secure the Automation Supply Chain
+
+TIP: This means you could e.g. jump from _chapter 2._ directly to _chapter 5._ or _chapter 7._
+
 
 You can jump back to a specific chapter using the list in the top left corner.
 Each chapter has a title and a table of content, which might be located at the top of the instructions or as a separate menu to the right, depending on your browser width.
