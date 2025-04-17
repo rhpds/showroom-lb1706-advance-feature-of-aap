@@ -36,7 +36,7 @@ When you run the Playbook during the xref:module-02.adoc[Configure Ansible Autom
 - Two Git repositories were setup as Projects `Webdev Git Repo` and `Webops Git Repo`
 - Playbooks were configured as Job Templates `Web App Deploy` and `Web Infra Deploy`
 
-TIP: If you want to know what the Playbooks look like, check out the Gitlab URL in the Projects.
+TIP: If you want to know what the Playbooks look like, check out the Git URL in the Projects.
 
 == Access the Automation Execution UI
 
