@@ -6,4 +6,5 @@
 * xref:module-05.adoc[5. Use dynamic inventories to scale your automation]
 * xref:module-06.adoc[6. Constructed inventory feature]
 * xref:module-07.adoc[7. Secure the Automation Supply Chain]
+* xref:the-end.adoc[Before you leave!]
 * xref:lab-access.adoc[Lab Access]
