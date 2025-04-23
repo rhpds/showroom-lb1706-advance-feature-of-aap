@@ -31,7 +31,7 @@ When there is a new NodeJS-based website to deploy, two main steps need to happe
 - Deploy the most recent version of the JavaScript web application.
 - Make sure everything is prepared to run the application like the directory structure and service restarts.
 
-When you run the Playbook during the xref:module-02.adoc[Configure Ansible Automation Platform with Ansible] chapter some resources you need here were already setup:
+As you ran the Playbook during the xref:module-02.adoc[Configure Ansible Automation Platform with Ansible] chapter some resources you need here were already setup:
 
 - Two Git repositories were setup as Projects `Webdev Git Repo` and `Webops Git Repo`
 - Playbooks were configured as Job Templates `Web App Deploy` and `Web Infra Deploy`
@@ -40,57 +40,58 @@ TIP: If you want to know what the Playbooks look like, check out the Git URL in 
 
 == Access the Automation Execution UI
 
-In your browser open {z_ansible_controller_web_ui_url}[window=_blank] (or click on the tab AAP" on the right of those instructions) and login as user `{z_ansible_controller_admin_username}` with the password `{z_ansible_controller_admin_password}`.
+In your browser open {z_ansible_controller_web_ui_url}[window=_blank] (or click on the tab "AAP" on the right of those instructions) and login as user `{z_ansible_controller_admin_username}` with the password `{z_ansible_controller_admin_password}`.
 
 == Configure the Workflow
 
 Now, you set up the Workflow to bring together the work of the two teams.
 In the Automation Execution section, go to the **Templates** resource and click the blue **Create template** button.
-Choose **Create workflow job template** and fill in as follows:
 
-- **Name:** Deploy Webapplication
-- **Organization:** Default
-- Click **Create workflow job template** at the bottom
-
+. Choose **Create workflow job template** and fill in as follows:
++
+--
+** **Name:** Deploy Webapplication
+** **Organization:** Default
+** Click **Create workflow job template** at the bottom
+--
++
 After saving the template the **Workflow Visualizer** opens to allow you to build a workflow. You can later open the **Workflow Visualizer** again by using the button labeled **Visualizer** on the template details page.
 
-- Click on the **Add step** button, a dialog to configure a new **workflow node** opens.
-- First, select the node type **Job Template**
-- Choose the **Web Infra Deploy** Template
-- Click **Next** then **Finish**
-
+. Click on the **Add step** button, a dialog to configure a new **workflow node** opens.
+. First, select the node type **Job Template**
+. Choose the **Web Infra Deploy** Template
+. Click **Next** then **Finish**
++
 You get into the **Workflow Visualizer** overview showing the first workflow node.
 
-// FIXME: we need to fix the screenshot and the explanations
-- The node gets annotated with the name of the job.
-- Click the kebab-style menu right next to the existing node "Web Infra Deploy", you’ll see a number of options appearing:
+** The node gets annotated with the name of the job.
+** Click the kebab-style menu right next to the existing node "Web Infra Deploy", you’ll see a number of options appearing:
 image:workflow-node-edit.png[width="80",height="200",float="right"]
-** **Edit step** to edit the current workflow node
-** **Add step and link** to add new workflow node
-** and a **Remove step** to delete current workflow node.
+*** **Edit step** to edit the current workflow node
+*** **Add step and link** to add new workflow node
+*** and a **Remove step** to delete current workflow node.
 
-- We want to add another workflow node, so click the **Add step and link** sign
-- Choose **Web App Deploy** as the next Job Template.
-- The **Status** field sets the condition under which the next node is executed, select **Run on success**
+. We want to add another workflow node, so click the **Add step and link** sign
+. Choose **Web App Deploy** as the next Job Template.
+. The **Status** field sets the condition under which the next node is executed, select **Run on success**
 +
 TIP: The Status field allows for more complex workflows. You could lay out different execution paths for successful and for failed Playbook runs.
 
-- Click **Next** then **Finish**
-
+. Click **Next** then **Finish**
++
 Your workflow should look like this:
++
+image::webapplication-workflow.png[Workflow deploying Web Infra and App,link=self,window=_blank]
 
-// FIXME: we need a new screenshot for this one
-image::webapplication-workflow.png[Workflow deploying Web Infra and App]
-
-- Back in the main **Workflow Visualizer** view click **Save** in the upper left to save the Workflow Template.
+. Back in the main **Workflow Visualizer** view, click **Save** in the upper left to save the Workflow Template.
 
 == And Action!
 
 Your **Deploy Webapplication** workflow is ready to go, launch it.
 
-- Click the **Launch** button directly (potentially hidden behind a kebap-style/3 dots menu item) or go to the the **Templates** view and launch the **Deploy Webapplication** workflow by clicking the rocket icon.
+Click the **Launch** button directly (potentially hidden behind a kebap-style/3 dots menu item) or go to the the **Templates** view and launch the **Deploy Webapplication** workflow by clicking the rocket icon.
 
-image::job_workflow.png[]
+image::job_workflow.png[link=self,window=_blank]
 
 Note how the workflow run is shown in the job view as a visual representation of the different workflow steps. Same as for a normal job template execution you can go to the **Details** tab to get more information.
 
