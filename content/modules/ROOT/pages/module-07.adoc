@@ -4,7 +4,7 @@ Project signing allows users to sign content like playbooks, inventories, etc th
 
 The best way to understand how this works is, as most times, to give it a try. Read on!
 
-== Lab Scenario
+== The Scenario
 
 In your lab environment you'll find an instance of the `Gitea` Git service. A Git repository with Ansible content has been cloned to it already (it's actually the repository holding supporting Playbooks for this lab).
 
@@ -22,7 +22,7 @@ Look around, to the right in the UI you'll see a list of repositories, click the
 
 === Clone the repository
 
-Next, you need the repository from Gitea in your home directory on the bastion host. As you have already cloned this repo in the first chapter it should already exist. To check, in your VS Code terminal run:
+Next, you need the repository from Gitea in your home directory on the bastion host. As you have already cloned this repo in the first chapter it should already exist. To check, in your VS Code terminal run `ls -l ~`, which should output something like:
 
 [source,console,subs="attributes"]
 ----
@@ -45,7 +45,10 @@ git config --global user.email you@example.com
 
 By now we have a local Git repository with some Ansible content, nothing special yet. Now we'll sign the repository content.
 
-We will create a GnuPG key pair to sign our project locally. Asynchronous keys are used to validate the integrity of a project’s content. The private key from the key pair is used at the point of signing and a public key is used to verify that the content has not been manipulated in any way. The public key will be used in automation controller to verify signatures later on.
+We will create a GnuPG key pair to sign our project locally.
+Asymmetrical keys are used to validate the integrity of a project’s content.
+The private key from the key pair is used at the point of signing and a public key is used to verify that the content has not been manipulated in any way.
+The public key will be used in automation controller to verify signatures later on.
 
 === Prepare GPG
 
@@ -106,6 +109,39 @@ And finally, run the below command to list the gpg keys that exist on the system
 gpg --list-keys
 ----
 
+In summary, your session should have looked roughly as follows:
+
+[source,console]
+----
+$ gpg --batch --gen-key ~/gpg.txt
+gpg: directory '/home/lab-user/.gnupg' created
+gpg: keybox '/home/lab-user/.gnupg/pubring.kbx' created
+gpg: Generating a basic OpenPGP key
+gpg: /home/lab-user/.gnupg/trustdb.gpg: trustdb created
+gpg: key 0514AB0752B89B58 marked as ultimately trusted
+gpg: directory '/home/lab-user/.gnupg/openpgp-revocs.d' created
+gpg: revocation certificate stored as '/home/lab-user/.gnupg/openpgp-revocs.d/D34F31920EFEF5B9D1B898430514AB0752B89B58.rev'
+gpg: done
+$ gpg --output ~/signing_demo.asc --armor --export
+$ cat ~/signing_demo.asc
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+mQINBGgI8KEBEADSdpKXifZnBN3huHTKR8mbHFuPcEKn/CHFHIa5EDy0dPbyjj8j
+[... MANY LINES WITH LETTERS AND NUMBERS IN BASE64 FORMAT ...]
+=byJd
+-----END PGP PUBLIC KEY BLOCK-----
+$ gpg --list-keys
+gpg: checking the trustdb
+gpg: marginals needed: 3  completes needed: 1  trust model: pgp
+gpg: depth: 0  valid:   1  signed:   0  trust: 0-, 0q, 0n, 0m, 0f, 1u
+/home/lab-user/.gnupg/pubring.kbx
+---------------------------------
+pub   rsa4096 2025-04-23 [SC]
+      D34F31920EFEF5B9D1B898430514AB0752B89B58
+uid           [ultimate] VerySecure (with no passphrase) <student@localhost>
+sub   rsa3072 2025-04-23 [E]
+----
+
 === Configure ansible-sign and sign playbooks
 
 Now that we have prepared the signing keys let's sign our `{gitea_controller_project}` repository using the `ansible-sign` tool. First install the tool itself:
@@ -148,6 +184,42 @@ head -n-0 /home/{z_bastion_ssh_user_name}/{gitea_controller_project}/.ansible-si
 
 TIP: `head -n-0` is a trick to output the content of multiple files separated by their names as header between arrows.
 
+Again, in summary, your session should have looked roughly as follows:
+
+[source,console]
+----
+$ sudo dnf install ansible-sign -y
+Updating Subscription Management repositories.
+[... MANY MORE LINES ...]
+Installed:
+  ansible-sign-0.1.1-2.el9ap.noarch  python3.11-distlib-0.3.8-1.el9ap.noarch  python3.11-gnupg-0.5.2-1.el9ap.noarch 
+
+Complete!
+$ vi /home/lab-user/playbooks-adv-controller/MANIFEST.in
+$ ansible-sign project gpg-sign /home/lab-user/playbooks-adv-controller
+[OK   ] GPG signing successful!
+[NOTE ] Checksum manifest: /home/lab-user/playbooks-adv-controller/.ansible-sign/sha256sum.txt
+[NOTE ] GPG summary: signature created
+$ head -n-0 /home/lab-user/playbooks-adv-controller/.ansible-sign/sha256sum.*
+==> /home/lab-user/playbooks-adv-controller/.ansible-sign/sha256sum.txt <==
+ca20222e12c10ae22ca8d8a410b7f7a6c9a6ddb306d8eba6238f65c93b08755f  MANIFEST.in
+e4a5116483454410a19e2f35513215ecdab7fc742b4e1cf17b7bf358e92f3856  apache_install.yml
+a021bf2567835899cfa632aa4bbc7ecc38b1ab79944368a7c51ee5fac67aaf10  cis.yml
+feac3c5b76139bd6756148759485c8b9904514c22d1ef18b486ea8c693fb101c  configure-controller.yml
+d3de70bf5cdad22044041d96d3650b7ea390cb8393d758b828e343289fd67e7f  repo-sign-git.yml
+a3a48477a2fc4e013f704ec2fec94d9a05c7abb45f0977619bf38552bb2c99cb  simple_git.yml
+2a4e7e0658b43c65a057fe7ea11648c38fa46a4357c93e60717f96e4b4453bfe  stig-config.yml
+0cb51c2c244549558a98ca03431652e0132107b002857eaff4417462604764dd  stig-packages.yml
+
+==> /home/lab-user/playbooks-adv-controller/.ansible-sign/sha256sum.txt.sig <==
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEE008xkg7+9bnRuJhDBRSrB1K4m1gFAmgI8lIACgkQBRSrB1K4
+[... MANY LINES WITH LETTERS AND NUMBERS IN BASE64 FORMAT ...]
+=iFhm
+-----END PGP SIGNATURE-----
+----
+
 === Push content to Gitea
 
 To make the repository available as a Project to automation controller, the new files must be pushed from our local Git clone to the Gitea repository. Add the new files for git staging:
@@ -159,6 +231,7 @@ git add .ansible-sign/ MANIFEST.in
 git status
 ----
 
+Git tells you that there are changes to be committed.
 Commit the changes:
 
 [source,shell,role=execute]
@@ -173,9 +246,10 @@ Push the new files to your Git repository server:
 git push
 ----
 
-VS Code will open a _small_ dialog at the top of the window asking for username and password, enter `{z_gitea_web_ui_username}` and as password `{z_gitea_web_ui_password}`.
+VS Code will open a _small_ dialog at the top of the window asking for username and password, else git in the terminal will simply ask for username and password.
+In both cases, enter `{z_gitea_web_ui_username}` respectively `{z_gitea_web_ui_password}`.
 
-image::vscode-git-login.png[800,600]
+image::vscode-git-login.png[800,600,link=self,window=_blank]
 
 == Setup Automation Execution
 
@@ -183,7 +257,9 @@ Now, we have to configure our automation execution to use and verify our signed 
 
 === Create Credential with signing public key
 
-The first step is to create a new Credential with the public key file that we exported already. In the Terminal run:
+The first step is to create a new Credential with the public key file that we exported already.
+
+In the Terminal run:
 
 [source,shell,role=execute]
 ----
@@ -191,12 +267,14 @@ cat ~/signing_demo.asc
 ----
 
 Copy _all_ of its contents _including_ `-----BEGIN PGP PUBLIC KEY BLOCK-----` and `-----END PGP PUBLIC KEY BLOCK-----`.
+
 In the web UI go to *Automation Execution* ⇒ *Infrastructure* ⇒ *Credentials*. Then:
 
-* click on the blue **Create Credential** button.
+. Click on the blue **Create Credential** button.
 * **Name**: ansible-sign
 * **Credential Type**: GPG Public Key
-* This will open a textbox for you to paste the public key that is in the Clipboard. Paste the public key and click **Create Credential**.
+. This will open a textbox for you to paste the public key that is in the Clipboard.
+. Click **Create Credential**.
 
 This will add the public key as a Credential in your automation controller.
 
@@ -204,32 +282,34 @@ This will add the public key as a Credential in your automation controller.
 
 To configure the Gitea repository as a Project we need an SCM credential. Again in the *Credentials* section do:
 
-* Click on the blue **Create credential** button.
+. Click on the blue **Create credential** button.
+. Enter:
 * **Name**: gitea
 * **Organization**: Default
 * **Credential Type**: Source Control
 * **Username**: {z_gitea_web_ui_username}
 * **Password**: {z_gitea_web_ui_password}
-* Click **Create credential**.
+. Click **Create credential**.
 
 Now, to create the Project, go to *Automation Execution* ⇒ *Projects*:
 
-* Click on the blue **Create project** button
+. Click on the blue **Create project** button
+. Enter:
 * **Name**: Signed Project
 * **Organization:** Default
 * **Source Control Type**: Git
 * **Content Signature Validation Credential**: ansible-sign
 * **Source Control URL**: The clone URL of your Gitea repository, {z_gitea_web_ui_url}/{z_gitea_web_ui_username}/{gitea_controller_project}.git
 * **Source Control Credential**: gitea
-* Click **Create project**
+. Click **Create project**
 
 The important part of the Project configuration is **Content Signature Validation Credential**, this tells automation controller to use the GPG key in the credentials to verify the repository.
 
 == Check if signatures were validated in controller
 
-Let's check if the signatures have been checked during the initial Project sync when you hit **Create Project**.
+Let's check if the signatures have been checked during the initial Project sync when you click **Create Project**.
 
-Click on **Jobs** on the left menu and then click the most recent job that ran the project sync for the **Signed Project**. If this job was successful, that means the signature validation was successful. You can also verify this by looking at the tasks in the job run, scroll the job run to find the below tasks:
+Click on **Automation Execution** ⇒ **Jobs** on the left menu and then click the most recent job that ran the project sync for the **Signed Project**. If this job was successful, that means the signature validation was successful. You can also verify this by looking at the tasks in the job run, scroll the job run to find the below tasks:
 
 [source,shell]
 ----
@@ -259,7 +339,8 @@ git commit -m "changing file"
 git push
 ----
 
-VS Code will again open a _small_ dialog at the top of the window asking for username and password, enter `{z_gitea_web_ui_username}` and as password `{z_gitea_web_ui_password}`.
+VS Code will again open a _small_ dialog at the top of the window asking for username and password, or git in the terminal will ask for the same information.
+In both cases, enter `{z_gitea_web_ui_username}` respectively `{z_gitea_web_ui_password}`.
 
 If this change was legit, you would have re-signed the repository content. This way automation controller should recognize the signature of the file is not valid anymore and fail the repository sync. Give it a try:
 

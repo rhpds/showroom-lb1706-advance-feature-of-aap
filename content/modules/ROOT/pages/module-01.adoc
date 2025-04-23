@@ -8,7 +8,7 @@ It provides consistent access to the components of AAP in one interface.
 To access the UI, click on the URL {z_ansible_controller_web_ui_url}[window=_blank] to open it in a new browser tab, or in Showroom click on the "AAP" tab.
 Both will take you to the AAP login page:
 
-image::aap-login.png[500,300]
+image::aap-login.png[500,300,link=self,window=_blank]
 
 Login as user **lab-user** with the password **{z_ansible_controller_admin_password}**. This will open the shiny new UI, let's have a look around.
 
@@ -16,7 +16,7 @@ TIP: Depending on the width of your browser window the main menu to the left mig
 
 The menu lists the main components of AAP, most entries will open sub-menus when clicked, like the **Automation Execution** in this example:
 
-image::aap-ui-menu.png[800,600]
+image::aap-ui-menu.png[800,600,link=self,window=_blank]
 
 When you access the UI, you will start on the **Overview** page which provides information about what's going on in your AAP in a handy dashboard.
 Right now your environment hasn't done anything so this will be pretty empty.
@@ -24,7 +24,7 @@ But we'll of course change this during the course of this lab.
 
 But there is more: if you scroll down, you'll find a section called **Quick Starts**. These are interactive guides to get you started quickly with key Ansible Automation Platform features. This will help introduce new users to Ansible Automation Platform.
 
-image::quickstarts.png[800,600]
+image::quickstarts.png[800,600,link=self,window=_blank]
 
 ## Menu Items
 
@@ -58,7 +58,7 @@ The new interface is reactive, meaning it changes its appearance depending on th
 The next picture shows two screenshots of the UI, from a wide screen on the left, and a narrow one on the right:
 
 .Wide and narrow screens side by side
-image::narrow_screen.png[Wide and narrow screens side by side]
+image::narrow_screen.png[Wide and narrow screens side by side,link=self,window=_blank]
 
 Two main things are to be noted:
 

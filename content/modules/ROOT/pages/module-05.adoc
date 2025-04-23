@@ -1,4 +1,6 @@
-# Use dynamic inventories to scale your automation.
+= Use dynamic inventories to scale your automation.
+
+== The Scenario
 
 In Ansible and the Ansible Automation Platform, as you know, everything starts with an inventory. There are several methods how inventories can be created. Starting from simple static definitions over importing inventory files to dynamic and smart inventories.
 
@@ -19,7 +21,7 @@ Our recommendation in real life remains to use Python to write your dynamic inve
 And actually you should even place the inventory plugin in a collection and use it as part of this collection added to an Execution Environment loaded into the automation execution.
 But this approach would have been too involved for this lab, so here you are: Bash!
 
-=== The Inventory Source
+== The Inventory Source
 
 First you need an inventory source. In *real life* this would be your cloud provider, your CMDB, or what not. For the sake of this lab we put a simple file into a GitLab repository.
 
@@ -92,7 +94,7 @@ Well, this is handy, the output is already presented as JSON, as expected by Ans
 
 NOTE: Okay, seriously, in real life your plugin would likely get some information from your source system, format it as JSON and return the data to the automation execution.
 
-==== The Custom Inventory Script
+== The Custom Inventory Script
 
 An inventory script (and plugins, too) has to follow some conventions. It must accept the *`--list`* and *`--host <hostname>`* arguments. When it is called with *`--list`*, the script must output JSON-encoded data containing all groups and hosts to be managed. When called with *`--host <hostname>`* it must return an JSON-formatted hash or dictionary of host variables (can be empty) for this particular host.
 
@@ -140,7 +142,7 @@ As simple as it gets, right? More information can be found on https://docs.ansib
 
 So, now you have a source of a (slightly static) dynamic inventory (talk about an oxymoron…) and a script to fetch and pass it to the automation execution.
 
-=== Integrate into Ansible Automation Platform
+== Integrate into Ansible Automation Platform
 
 In Ansible Tower up to version 3.8, you could create inventory scripts directly in the web UI. Since automation controller 4.0 (aka AAP 2.0) the only way to get inventory scripts into Automation Execution is by putting the script into a source control repository.
 
@@ -148,31 +150,31 @@ For this lab the inventory script was already created in the Git repository you 
 
 You can directly proceed to adding the dynamic inventory and pointing it to the inventory script.
 
-* In the AAP web UI, open *Automation Execution* ⇒ *Infrastructure* ⇒ *Inventories*.
-* To create a new inventory, click the blue *Create inventory* drop-down and click on *Create inventory*.
-* Fill in the needed data:
-  ** *Name:* Cloud inventory
-  ** *Organization:* Default
-* Click *Create inventory*
-* Change to the *Sources* tab and click the blue *Create Source* button.
-* Fill in the needed data:
-  ** *Name:* Cloud inventory Script
-  ** *Source:* Sourced from a Project
-  ** *Project:* Lab Project Repo
-  ** *Inventory file:* constructed-inventory/inventory-script
-  ** enable *Update on launch*
-  ** *Cache timeout (seconds)*: 300
-* Click on *Create source*
-* Go back to the *Sources* tab of the Cloud inventory
-* Start the inventory update by clicking the rocket icon
+. In the AAP web UI, open *Automation Execution* ⇒ *Infrastructure* ⇒ *Inventories*.
+. To create a new inventory, click the blue *Create inventory* drop-down and click on *Create inventory*.
+. Fill in the needed data:
+** *Name:* Cloud inventory
+** *Organization:* Default
+. Click *Create inventory*
+. Change to the *Sources* tab and click the blue *Create Source* button.
+. Fill in the needed data:
+** *Name:* Cloud inventory Script
+** *Source:* Sourced from a Project
+** *Project:* Lab Project Repo
+** *Inventory file:* constructed-inventory/inventory-script
+** enable *Update on launch*
+** *Cache timeout (seconds)*: 300
+. Click on *Create source*
+. Go back to the *Sources* tab of the Cloud inventory
+. Start the inventory update by clicking the rocket icon
 
-image::inventory-source.png[800,600]
+image::inventory-source.png[800,600,link=self,window=_blank]
 
 Navigate to *Jobs* in the *Automation Execution* section to watch the initial sync, the *Type* is `Inventory Sync`.
 
 After the inventory sync has finished check out the new hosts which were added by it to your _Cloud inventory_, by going to *Automation Execution* ⇒ *Infrastructure* ⇒ *Hosts*. You should find a number of new hosts according to the JSON output above.
 
-=== What is the take-away?
+== What is the take-away?
 
 Using this simple example you have:
 

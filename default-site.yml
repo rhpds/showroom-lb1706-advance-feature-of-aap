@@ -1,6 +1,6 @@
 ---
 site:
-  title: LB1706 - Advanced automation controller
+  title: "LB1706 - advanced features of AAP automation controller"
   url: https://github.com/rhpds/showroom-lb1706-advance-feature-of-aap
   start_page: modules::index.adoc
 

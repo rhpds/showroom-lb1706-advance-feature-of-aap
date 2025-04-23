@@ -6,7 +6,7 @@ nav:
 
 asciidoc:
   attributes:  # keep in alphabetical order where meaningful
-    lab_name: "LB1706: advanced features of automation controller"
+    lab_name: "LB1706 - advanced features of AAP automation controller"
     page-pagination: true
     release-version: master
     # variables taken from rendered showroom (name could be more explicit)

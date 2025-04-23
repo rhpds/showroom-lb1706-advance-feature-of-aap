@@ -31,7 +31,7 @@ Your lab includes a number of servers:
 
 [TIP]
 ====
-. All access information has been summarized for your convenience on page link:lab-access.html[Lab Access],
+. All access information has been summarized for your convenience on page link:lab-access.html[Lab Access].
 . This page and all others are accessible from the upper left corner image:corner_menu.png[role=half-width] on narrow screens, the menu is expanded to the left on broader screens.
 ====
 
@@ -41,6 +41,8 @@ Some hints to get you started:
 
 - Don’t type everything manually, use copy & paste from the browser when appropriate, but take your time to understand what you are actually doing.
 - To **edit files** or **open a terminal window**, we provide **VS Code Server**, basically the great Visual Studio Code Editor running in your browser.
+- You can click on any screenshot to magnify it in a new window or tab.
+  Once done, simply close the window or tab to come back to the instructions.
 
 TIP: Commands you are supposed to run can be shown with or without the expected output
 
@@ -52,7 +54,7 @@ If you're reading these lines, you should see a WebUI looking like the following
 We call this user interface "Showroom" so don't wonder if you see this name here and there.
 
 .Showroom navigation overview
-image::showroom.drawio.png[Showroom navigation overview]
+image::showroom.drawio.png[Showroom navigation overview,link=self,window=_blank]
 
 The lab instructions are made of chapters, or exercises, which you should do in order, not forgetting steps as they might be relevant to following exercises.
 
@@ -62,7 +64,7 @@ Each chapter has a title and a table of content, which might be located at the t
 On the right side, there are different tabs each offering a different access to your environment, described in more details in the next chapter.
 You may use the resizing handle in the middle to give more space to the environment or to the instructions.
 
-TIP: if you don't see the right hand tabs in your environment, don't worry, you can also access the environment directly, as explained in the next chapter.
+TIP: If you don't see the right hand tabs in your environment, don't worry, you can also access the environment directly, as explained in the next chapter.
 
 == Accessing your Lab Environment
 
@@ -79,11 +81,11 @@ Now, open **VS Code** by clicking on the URL {z_vscode_web_ui_url}[window=_blank
 
 You should be greeted with a login screen:
 
-image::vscode-pwd.png[500,300]
+image::vscode-pwd.png[500,300,link=self,window=_blank]
 
 Use the password **{z_vscode_web_ui_password}** to log in to the **VS Code** server web UI. Now open a new terminal by heading to the menu item **Terminal** at the top of the **VS Code** UI and select **New Terminal** (the menu item might be hidden depending on browser width, behind three dots). A new section will appear in the lower half of the screen and you will be greeted with a prompt:
 
-image::vscode-terminal.png[]
+image::vscode-terminal.png[link=self,window=_blank]
 
 Congrats, you now have a shell terminal on your bastion node you can use to work on the command line. From here you run commands or access the other hosts in your lab environment, if the lab task requires it.
 
@@ -155,17 +157,18 @@ Run the `ansible-navigator` command with the `images` argument to look at execut
 ansible-navigator images
 ----
 
-image::navigator-images.png[]
+image::navigator-images.png[link=self,window=_blank]
 
 NOTE: The output you see might differ from the above output, but you should see at least the one image configured in the file.
+Beware that the procedure might take one or two minutes to pull and save the image locally.
 
 This command gives you information about all currently installed Execution Environments or EEs for short. Investigate an EE by pressing the corresponding number. For example pressing **0** with the above example will open the `ee-supported-rhel8` execution environment:
 
-image::navigator-ee-menu.png[]
+image::navigator-ee-menu.png[link=self,window=_blank]
 
 Selecting e.g. **0** for `Image information` will show information about the execution environment image you are inspecting:
 
-image::navigator-ee-info.png[]
+image::navigator-ee-info.png[link=self,window=_blank]
 
 To get back to the preceding view in `ansible-navigator` press **Esc**, if needed several times.
 The last press in the main menu will get you out of Navigator.
