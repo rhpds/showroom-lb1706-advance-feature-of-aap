@@ -43,10 +43,7 @@ Some hints to get you started:
 - To **edit files** or **open a terminal window**, we provide **VS Code Server**, basically the great Visual Studio Code Editor running in your browser.
 - You can click on any screenshot to magnify it in a new window or tab.
   Once done, simply close the window or tab to come back to the instructions.
-
-TIP: Commands you are supposed to run can be shown with or without the expected output
-
-TIP: The command line can wrap on the HTML page from time to time. Therefore the output might be separated from the command line for better readability by an empty line.
+- Copy & Paste in the virtual terminals offered in your favourite web browser can be finicky using keyboard combinations, but using the pop-up menu summoned by a right mouse-click always works.
 
 == Finding your way in the lab
 
