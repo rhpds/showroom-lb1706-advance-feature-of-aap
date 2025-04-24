@@ -24,4 +24,4 @@ Webops Git Repo:: https://gitlab.com/ansible-labs-crew/playbooks-ops.git[^]
 
 CAUTION: You might need to adapt slightly some of the code to your environment to make everything work correctly.
 
-And there is more than Automation Execution to discover in AAP, with https://www.redhat.com/en/technologies/management/ansible/event-driven-ansible[Event Driven Ansible (Decisions)], https://www.redhat.com/en/technologies/management/ansible/content-collections[prepared content] and the many https://www.redhat.com/en/technologies/management/ansible/development-tools[developer tools], your ability to automate becomes limitless.
+And there is more than Automation Execution to discover in AAP, with https://www.redhat.com/en/technologies/management/ansible/event-driven-ansible[Event Driven Ansible (Decisions)^], https://www.redhat.com/en/technologies/management/ansible/content-collections[prepared content^] and the many https://www.redhat.com/en/technologies/management/ansible/development-tools[developer tools^], your ability to automate becomes limitless.
