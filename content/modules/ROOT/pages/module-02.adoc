@@ -76,6 +76,7 @@ Now, let's get the Playbook. In your VS Code terminal (or SSH session) run:
 ----
 git clone {z_gitea_web_ui_url}/{z_gitea_web_ui_username}/{gitea_controller_project}.git
 cd {gitea_controller_project}
+git checkout branch-lab-2025
 cat configure-controller.yml
 ----
 
